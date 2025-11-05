@@ -63,6 +63,10 @@ def run_ytdlp_download(task_id, url, options):
             video_format = options.get('video_format', 'best')
             cmd.extend(['-f', video_format])
 
+            # Automatically remux to mp4 if not already mp4 (uses ffmpeg, no re-encoding)
+            # This ensures all videos are output as mp4 regardless of source format
+            cmd.extend(['--remux-video', 'mp4'])
+
         # Embed thumbnail
         if options.get('embed_thumbnail'):
             cmd.append('--embed-thumbnail')
