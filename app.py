@@ -61,7 +61,19 @@ def run_ytdlp_download(task_id, url, options):
         else:
             # Video format
             video_format = options.get('video_format', 'best')
-            cmd.extend(['-f', video_format])
+
+            # Optimize format selection to prefer mp4
+            if video_format == 'best':
+                # Prefer mp4 container: try best mp4 first, fallback to best quality
+                cmd.extend(['-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'])
+            elif video_format == 'bestvideo+bestaudio':
+                # Merge best video and audio, prefer mp4
+                cmd.extend(['-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio'])
+            else:
+                cmd.extend(['-f', video_format])
+
+            # Force output to mp4 format when merging
+            cmd.extend(['--merge-output-format', 'mp4'])
 
         # Embed thumbnail
         if options.get('embed_thumbnail'):
