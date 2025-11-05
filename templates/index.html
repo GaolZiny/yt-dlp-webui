@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yt-dlp Web UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input[type="text"],
+        .form-group select,
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group select:focus,
+        .form-group input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .mode-option {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .mode-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .mode-option.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .mode-option input[type="radio"] {
+            display: none;
+        }
+
+        .mode-option .icon {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 100%;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .btn-danger:hover {
+            background: #ff3838;
+        }
+
+        .btn-download {
+            background: #2ecc71;
+            color: white;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .btn-download:hover {
+            background: #27ae60;
+        }
+
+        .progress-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .progress-message {
+            padding: 10px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .files-section {
+            margin-top: 20px;
+        }
+
+        .files-list {
+            margin-top: 15px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .file-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .main-card {
+                padding: 20px;
+            }
+
+            .mode-selector {
+                flex-direction: column;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 yt-dlp Web UI</h1>
+            <p>轻松下载视频和音频</p>
+        </div>
+
+        <!-- Alert messages -->
+        <div id="alertContainer"></div>
+
+        <!-- Main download form -->
+        <div class="main-card">
+            <h2>新建下载</h2>
+
+            <form id="downloadForm">
+                <div class="form-group">
+                    <label for="url">视频/音频链接 *</label>
+                    <input
+                        type="text"
+                        id="url"
+                        name="url"
+                        placeholder="粘贴 YouTube、Bilibili 等网站链接..."
+                        required
+                    />
+                </div>
+
+                <div class="mode-selector">
+                    <label class="mode-option active">
+                        <input type="radio" name="mode" value="video" checked />
+                        <div class="icon">🎥</div>
+                        <div>视频</div>
+                    </label>
+                    <label class="mode-option">
+                        <input type="radio" name="mode" value="audio" />
+                        <div class="icon">🎵</div>
+                        <div>音频</div>
+                    </label>
+                </div>
+
+                <!-- Audio options -->
+                <div id="audioOptions" class="hidden">
+                    <div class="options-grid">
+                        <div class="form-group">
+                            <label for="audioFormat">音频格式</label>
+                            <select id="audioFormat" name="audio_format">
+                                <option value="mp3">MP3</option>
+                                <option value="aac">AAC</option>
+                                <option value="m4a">M4A</option>
+                                <option value="opus">Opus</option>
+                                <option value="flac">FLAC (无损)</option>
+                                <option value="wav">WAV (无损)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="audioQuality">音频质量 (0=最好, 10=最差)</label>
+                            <input
+                                type="number"
+                                id="audioQuality"
+                                name="audio_quality"
+                                value="5"
+                                min="0"
+                                max="10"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video options -->
+                <div id="videoOptions">
+                    <div class="form-group">
+                        <label for="videoFormat">视频格式</label>
+                        <select id="videoFormat" name="video_format">
+                            <option value="best">最佳质量</option>
+                            <option value="bestvideo+bestaudio">最佳视频+音频</option>
+                            <option value="worst">最低质量（节省空间）</option>
+                            <option value="bestvideo[height<=720]+bestaudio">720p</option>
+                            <option value="bestvideo[height<=1080]+bestaudio">1080p</option>
+                            <option value="bestvideo[height<=2160]+bestaudio">4K</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Common options -->
+                <div class="options-grid">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="embedThumbnail" name="embed_thumbnail" />
+                        <label for="embedThumbnail">嵌入缩略图</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="embedMetadata" name="embed_metadata" checked />
+                        <label for="embedMetadata">嵌入元数据</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="writeSubs" name="write_subs" />
+                        <label for="writeSubs">下载字幕</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="downloadBtn">
+                    <span>⬇️ 开始下载</span>
+                </button>
+            </form>
+
+            <!-- Progress section -->
+            <div class="progress-section" id="progressSection">
+                <h2>下载进度</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar">0%</div>
+                </div>
+                <div class="progress-message" id="progressMessage">准备下载...</div>
+            </div>
+        </div>
+
+        <!-- Downloaded files -->
+        <div class="main-card files-section">
+            <h2>已下载文件</h2>
+            <button class="btn btn-secondary" onclick="refreshFiles()">🔄 刷新列表</button>
+            <div class="files-list" id="filesList">
+                <p style="text-align: center; color: #666; padding: 20px;">暂无文件</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mode selector
+        document.querySelectorAll('.mode-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.mode-option').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+
+                const mode = this.querySelector('input[type="radio"]').value;
+                if (mode === 'audio') {
+                    document.getElementById('audioOptions').classList.remove('hidden');
+                    document.getElementById('videoOptions').classList.add('hidden');
+                } else {
+                    document.getElementById('audioOptions').classList.add('hidden');
+                    document.getElementById('videoOptions').classList.remove('hidden');
+                }
+            });
+        });
+
+        // Show alert
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertContainer.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // Download form submit
+        document.getElementById('downloadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const data = {
+                url: formData.get('url'),
+                mode: formData.get('mode'),
+                audio_format: formData.get('audio_format'),
+                audio_quality: formData.get('audio_quality'),
+                video_format: formData.get('video_format'),
+                embed_thumbnail: formData.get('embed_thumbnail') === 'on',
+                embed_metadata: formData.get('embed_metadata') === 'on',
+                write_subs: formData.get('write_subs') === 'on'
+            };
+
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.disabled = true;
+            downloadBtn.querySelector('span').textContent = '⏳ 正在处理...';
+
+            try {
+                const response = await fetch('/api/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showAlert('下载任务已创建！', 'success');
+                    document.getElementById('progressSection').style.display = 'block';
+                    monitorProgress(result.task_id);
+                } else {
+                    showAlert(result.error || '创建下载任务失败', 'error');
+                    downloadBtn.disabled = false;
+                    downloadBtn.querySelector('span').textContent = '⬇️ 开始下载';
+                }
+            } catch (error) {
+                showAlert('网络错误: ' + error.message, 'error');
+                downloadBtn.disabled = false;
+                downloadBtn.querySelector('span').textContent = '⬇️ 开始下载';
+            }
+        });
+
+        // Monitor download progress
+        function monitorProgress(taskId) {
+            const interval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/api/status/${taskId}`);
+                    const status = await response.json();
+
+                    const progressBar = document.getElementById('progressBar');
+                    const progressMessage = document.getElementById('progressMessage');
+
+                    progressBar.style.width = status.progress + '%';
+                    progressBar.textContent = Math.round(status.progress) + '%';
+                    progressMessage.textContent = status.message || '下载中...';
+
+                    if (status.status === 'completed') {
+                        clearInterval(interval);
+                        showAlert('下载完成！', 'success');
+                        document.getElementById('downloadBtn').disabled = false;
+                        document.getElementById('downloadBtn').querySelector('span').textContent = '⬇️ 开始下载';
+                        refreshFiles();
+                    } else if (status.status === 'failed') {
+                        clearInterval(interval);
+                        showAlert('下载失败: ' + status.message, 'error');
+                        document.getElementById('downloadBtn').disabled = false;
+                        document.getElementById('downloadBtn').querySelector('span').textContent = '⬇️ 开始下载';
+                    }
+                } catch (error) {
+                    console.error('Error checking status:', error);
+                }
+            }, 1000);
+        }
+
+        // Refresh files list
+        async function refreshFiles() {
+            try {
+                const response = await fetch('/api/files');
+                const data = await response.json();
+
+                const filesList = document.getElementById('filesList');
+
+                if (data.files.length === 0) {
+                    filesList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">暂无文件</p>';
+                    return;
+                }
+
+                filesList.innerHTML = data.files.map(file => {
+                    const escapedName = file.name.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                    return `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-meta">
+                                大小: ${formatFileSize(file.size)} |
+                                修改时间: ${new Date(file.modified).toLocaleString('zh-CN')}
+                            </div>
+                        </div>
+                        <div class="file-actions">
+                            <button class="btn btn-download" data-filename="${escapedName}">
+                                📥 下载
+                            </button>
+                            <button class="btn btn-danger" data-filename="${escapedName}">
+                                🗑️ 删除
+                            </button>
+                        </div>
+                    </div>
+                `;
+                }).join('');
+            } catch (error) {
+                showAlert('获取文件列表失败: ' + error.message, 'error');
+            }
+        }
+
+        // Download file to local computer
+        function downloadFile(filename) {
+            window.location.href = `/api/download-file/${encodeURIComponent(filename)}`;
+        }
+
+        // Delete file
+        async function deleteFile(filename) {
+            if (!confirm(`确定要删除文件 "${filename}" 吗？`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/delete-file/${encodeURIComponent(filename)}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert('文件已删除', 'success');
+                    refreshFiles();
+                } else {
+                    const data = await response.json();
+                    showAlert('删除失败: ' + (data.error || '未知错误'), 'error');
+                }
+            } catch (error) {
+                showAlert('删除失败: ' + error.message, 'error');
+            }
+        }
+
+        // Handle button clicks using event delegation
+        document.addEventListener('click', function(e) {
+            // Check if clicked element is a download button
+            if (e.target.classList.contains('btn-download') || e.target.closest('.btn-download')) {
+                const button = e.target.classList.contains('btn-download') ? e.target : e.target.closest('.btn-download');
+                const filename = button.getAttribute('data-filename');
+                if (filename) {
+                    // Unescape HTML entities
+                    const actualFilename = filename.replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+                    downloadFile(actualFilename);
+                }
+            }
+
+            // Check if clicked element is a delete button
+            if (e.target.classList.contains('btn-danger') || e.target.closest('.btn-danger')) {
+                const button = e.target.classList.contains('btn-danger') ? e.target : e.target.closest('.btn-danger');
+                const filename = button.getAttribute('data-filename');
+                if (filename) {
+                    // Unescape HTML entities
+                    const actualFilename = filename.replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+                    deleteFile(actualFilename);
+                }
+            }
+        });
+
+        // Load files on page load
+        window.addEventListener('load', function() {
+            refreshFiles();
+        });
+    </script>
+</body>
+</html>
