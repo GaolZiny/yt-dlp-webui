@@ -1,57 +1,51 @@
 # yt-dlp Web UI
 
-<div align="center">
+一个美观、易用的 yt-dlp Web 界面，支持通过浏览器下载视频和音频。
 
-![yt-dlp Web UI](https://img.shields.io/badge/yt--dlp-Web%20UI-blueviolet?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python)
-![Flask](https://img.shields.io/badge/Flask-3.0-green?style=for-the-badge&logo=flask)
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+## ✨ 功能特性
 
-一个美观、易用的 **yt-dlp** Web 界面，支持通过浏览器下载 1000+ 个网站的视频和音频。
-
-[English](#english) | [中文](#中文)
-
-</div>
-
----
-
-## 中文
-
-### ✨ 功能特性
-
-- 🎥 **视频下载** - 支持多种视频质量（720p、1080p、4K、最佳质量）
-- 🎵 **音频下载** - 支持 MP3、AAC、M4A、Opus、FLAC、WAV 等格式
+- 🎥 **视频下载** - 支持多种视频质量选择（720p、1080p、4K等）
+- 🎵 **音频下载** - 支持提取音频并转换为MP3、AAC、FLAC等格式
 - 📊 **实时进度** - 实时显示下载进度和状态
 - 📁 **文件管理** - 查看、下载和删除已下载的文件
 - 🎨 **美观界面** - 现代化的响应式设计，支持移动端
-- 🐳 **Docker 支持** - 一键部署，轻松运行在 NAS 上
-- 🌍 **多网站支持** - 支持 YouTube、Bilibili、Twitter、Instagram、TikTok 等 1000+ 个网站
+- 🐳 **Docker支持** - 一键部署，轻松运行在NAS上
+- 🌍 **多网站支持** - 支持 YouTube、Bilibili 等 1000+ 个网站
 
-### 📸 界面预览
+## 📋 前提条件
 
-- 简洁的渐变色界面
-- 支持音频/视频模式切换
-- 实时下载进度显示
-- 文件列表管理
+- Docker 和 Docker Compose（用于容器化部署）
+- 或者 Python 3.10+（用于本地运行）
 
-### 🚀 快速开始
+## 🚀 快速开始
 
-#### 使用 Docker Compose（推荐）
+### 方法一：使用 Docker Compose（推荐）
 
-```bash
-# 1. 克隆项目
-git clone https://github.com/你的用户名/yt-dlp-webui.git
-cd yt-dlp-webui
+1. **克隆或下载项目文件**
 
-# 2. 启动服务
-docker-compose up -d
+2. **编辑 `docker-compose.yml` 设置下载目录**
 
-# 3. 访问 Web 界面
-# 打开浏览器访问：http://localhost:8080
-```
+   打开 `docker-compose.yml`，找到 `volumes` 部分：
 
-#### 使用 Docker
+   ```yaml
+   volumes:
+     # 将 ./downloads 改为你 NAS 上的实际路径
+     # 例如：/volume1/downloads/yt-dlp:/downloads
+     - ./downloads:/downloads
+   ```
+
+3. **构建并启动容器**
+
+   ```bash
+   cd web-ui
+   docker-compose up -d
+   ```
+
+4. **访问 Web 界面**
+
+   打开浏览器，访问：`http://你的NAS地址:8080`
+
+### 方法二：使用 Docker 命令
 
 ```bash
 # 构建镜像
@@ -61,279 +55,220 @@ docker build -t yt-dlp-webui .
 docker run -d \
   --name yt-dlp-webui \
   -p 8080:8080 \
-  -v $(pwd)/downloads:/downloads \
+  -v /你的下载路径:/downloads \
   -e TZ=Asia/Shanghai \
   --restart unless-stopped \
   yt-dlp-webui
 ```
 
-#### 本地运行
+### 方法三：本地运行（开发模式）
 
 ```bash
-# 1. 安装依赖
+# 安装依赖
 pip install -r requirements.txt
 pip install yt-dlp
 
-# 2. 安装 ffmpeg
+# 安装 ffmpeg（必需）
 # macOS: brew install ffmpeg
 # Ubuntu: sudo apt install ffmpeg
-# Windows: https://ffmpeg.org/download.html
+# Windows: 从 https://ffmpeg.org/download.html 下载
 
-# 3. 运行应用
+# 运行应用
 python app.py
-
-# 4. 访问：http://localhost:8080
 ```
 
-### 📖 使用说明
+访问：`http://localhost:8080`
 
-#### 下载视频
+## 📖 使用说明
 
-1. 在"视频/音频链接"输入框中粘贴视频 URL
+### 下载视频
+
+1. 在"视频/音频链接"输入框中粘贴视频URL
 2. 选择"视频"模式
-3. 选择视频质量（720p、1080p、4K 等）
-4. 点击"开始下载"
-
-#### 下载音频
-
-1. 在"视频/音频链接"输入框中粘贴视频 URL
-2. 选择"音频"模式
-3. 选择音频格式（推荐 MP3）
-4. 设置音频质量（0-10，0 为最佳）
+3. 选择视频质量（可选）
+4. 勾选需要的选项（嵌入缩略图、元数据、字幕等）
 5. 点击"开始下载"
 
-#### 管理文件
+### 下载音频
 
-- **查看文件**：在"已下载文件"区域查看所有文件
-- **下载到本地**：点击"📥 下载"按钮
-- **删除文件**：点击"🗑️ 删除"按钮
+1. 在"视频/音频链接"输入框中粘贴视频URL
+2. 选择"音频"模式
+3. 选择音频格式（MP3、AAC、FLAC等）
+4. 设置音频质量（0-10，0为最佳）
+5. 点击"开始下载"
 
-### ⚙️ 配置
+### 管理文件
 
-#### 环境变量
+- **查看文件**：在"已下载文件"区域查看所有已下载的文件
+- **下载到本地**：点击文件旁边的"📥 下载"按钮，文件会下载到你的浏览器本地
+- **删除文件**：点击"🗑️ 删除"按钮删除服务器上的文件
+- **刷新列表**：点击"🔄 刷新列表"按钮更新文件列表
 
-| 变量 | 说明 | 默认值 |
-|------|------|--------|
-| `DOWNLOAD_DIR` | 下载目录 | `/downloads` (Docker) 或 `./downloads` (本地) |
-| `PORT` | Web 服务端口 | `8080` |
-| `TZ` | 时区 | `UTC` |
+## ⚙️ 配置选项
 
-#### docker-compose.yml
+### 环境变量
+
+在 `docker-compose.yml` 中可以设置以下环境变量：
 
 ```yaml
-services:
-  yt-dlp-webui:
-    build: .
-    container_name: yt-dlp-webui
-    ports:
-      - "8080:8080"
-    volumes:
-      # 修改为你的下载目录
-      - ./downloads:/downloads
-    environment:
-      - DOWNLOAD_DIR=/downloads
-      - TZ=Asia/Shanghai
-    restart: unless-stopped
+environment:
+  - DOWNLOAD_DIR=/downloads  # 下载目录
+  - TZ=Asia/Shanghai         # 时区设置
 ```
 
-### 🔧 高级功能
-
-#### 音频格式说明
+### 音频格式说明
 
 - **MP3** - 最常用，兼容性好
-- **AAC** - 相同比特率下质量优于 MP3
-- **M4A** - Apple 设备友好
+- **AAC** - 相同比特率下质量优于MP3
+- **M4A** - Apple设备友好
 - **Opus** - 高效的现代编码格式
 - **FLAC** - 无损格式，文件较大
 - **WAV** - 未压缩无损，文件最大
 
-#### 视频质量说明
+### 视频质量说明
 
 - **最佳质量** - 下载最高质量的视频
-- **720p / 1080p / 4K** - 指定分辨率（如果源没有会自动降级）
+- **最佳视频+音频** - 分别下载最佳视频和音频并合并
+- **720p / 1080p / 4K** - 指定分辨率
 - **最低质量** - 下载最小的文件（节省空间）
 
-#### 在 NAS 上部署
+## 🔧 高级配置
 
-1. 将项目复制到 NAS
-2. 修改 `docker-compose.yml` 中的下载目录：
+### 在 NAS 上设置共享文件夹
+
+1. 在 Synology NAS 上创建共享文件夹（如 `yt-dlp-downloads`）
+2. 修改 `docker-compose.yml`：
+
    ```yaml
    volumes:
-     - /volume1/downloads/yt-dlp:/downloads  # Synology
+     - /volume1/yt-dlp-downloads:/downloads
    ```
-3. 运行 `docker-compose up -d`
-4. 访问 `http://NAS地址:8080`
 
-### 📝 支持的网站
+3. 通过 SMB/NFS 在你的电脑上访问该共享文件夹
 
-yt-dlp 支持 1000+ 个网站，包括但不限于：
+### 自定义端口
 
-- **视频平台**：YouTube, Bilibili, Vimeo, Dailymotion
-- **社交媒体**：Twitter, Facebook, Instagram, TikTok
-- **直播平台**：Twitch, YouTube Live
-- **其他**：更多网站请查看 [支持列表](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)
-
-### 🐛 故障排除
-
-#### 下载失败
-
-1. 检查 URL 是否有效
-2. 检查网站是否被 yt-dlp 支持
-3. 查看日志：`docker-compose logs -f`
-4. 更新 yt-dlp：重新构建镜像
-
-#### 无法访问界面
-
-1. 检查容器状态：`docker ps`
-2. 检查端口是否开放
-3. 检查防火墙设置
-
-#### macOS 端口冲突
-
-如果 8080 端口被占用，修改 `docker-compose.yml`：
+如果8080端口被占用，可以修改 `docker-compose.yml`：
 
 ```yaml
 ports:
-  - "9090:8080"  # 改为其他端口
+  - "9090:8080"  # 将主机端口改为其他端口
 ```
 
-### 🤝 贡献
+或者通过环境变量设置：
 
-欢迎提交 Issue 和 Pull Request！
+```yaml
+environment:
+  - PORT=9090  # 容器内使用的端口
+```
 
-### 📄 许可证
+### 持久化配置
 
-本项目基于 [MIT License](LICENSE) 开源。
+如果需要保存 yt-dlp 配置文件：
 
-### 🙏 致谢
+```yaml
+volumes:
+  - ./downloads:/downloads
+  - ./config:/root/.config/yt-dlp  # 添加配置目录映射
+```
+
+## 🐛 故障排除
+
+### 下载失败
+
+1. **检查 URL** - 确保URL有效且网站被 yt-dlp 支持
+2. **查看日志**：
+   ```bash
+   docker logs yt-dlp-webui
+   ```
+3. **更新 yt-dlp**：
+   ```bash
+   docker-compose down
+   docker-compose build --no-cache
+   docker-compose up -d
+   ```
+
+### 无法访问 Web 界面
+
+1. **检查容器状态**：
+   ```bash
+   docker ps
+   ```
+2. **检查防火墙**：确保 5000 端口开放
+3. **检查 NAS 网络设置**
+
+### 音频转换失败
+
+- 确保 ffmpeg 已安装（Docker 镜像中已包含）
+- 检查是否有足够的磁盘空间
+
+## 📝 支持的网站
+
+yt-dlp 支持 1000+ 个网站，包括但不限于：
+
+- YouTube
+- Bilibili
+- Twitter
+- Facebook
+- Instagram
+- TikTok
+- Vimeo
+- Twitch
+- 等等...
+
+完整列表：https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
+
+## 🔄 更新
+
+### 更新 Docker 镜像
+
+```bash
+cd web-ui
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+### 更新 yt-dlp
+
+在容器内更新：
+
+```bash
+docker exec -it yt-dlp-webui pip install --upgrade yt-dlp
+docker restart yt-dlp-webui
+```
+
+或者重新构建镜像（推荐）。
+
+## 📂 项目结构
+
+```
+web-ui/
+├── app.py                 # Flask 应用主程序
+├── templates/
+│   └── index.html        # Web 界面 HTML
+├── Dockerfile            # Docker 镜像配置
+├── docker-compose.yml    # Docker Compose 配置
+├── requirements.txt      # Python 依赖
+└── README.md            # 项目说明文档
+```
+
+## 🤝 贡献
+
+欢迎提交问题和改进建议！
+
+## 📄 许可证
+
+本项目基于 Unlicense 许可证开源。
+
+yt-dlp 本身也是开源项目：https://github.com/yt-dlp/yt-dlp
+
+## ⚠️ 免责声明
+
+本工具仅供学习和个人使用。请遵守相关网站的服务条款和版权法律。下载受版权保护的内容可能是非法的。使用本工具的风险由用户自行承担。
+
+## 🙏 致谢
 
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) - 强大的视频下载工具
 - [Flask](https://flask.palletsprojects.com/) - Web 框架
 - [FFmpeg](https://ffmpeg.org/) - 多媒体处理工具
-
-### ⚠️ 免责声明
-
-本工具仅供学习和个人使用。请遵守相关网站的服务条款和版权法律。
-
----
-
-## English
-
-### ✨ Features
-
-- 🎥 **Video Downloads** - Support multiple quality options (720p, 1080p, 4K, best quality)
-- 🎵 **Audio Extraction** - Extract and convert to MP3, AAC, M4A, Opus, FLAC, WAV
-- 📊 **Real-time Progress** - Live download progress tracking
-- 📁 **File Management** - View, download, and delete files
-- 🎨 **Beautiful UI** - Modern responsive design, mobile-friendly
-- 🐳 **Docker Support** - Easy deployment on NAS or servers
-- 🌍 **1000+ Sites** - YouTube, Bilibili, Twitter, Instagram, TikTok, and more
-
-### 🚀 Quick Start
-
-#### Using Docker Compose (Recommended)
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/yourusername/yt-dlp-webui.git
-cd yt-dlp-webui
-
-# 2. Start the service
-docker-compose up -d
-
-# 3. Access the web interface
-# Open browser: http://localhost:8080
-```
-
-#### Using Docker
-
-```bash
-# Build the image
-docker build -t yt-dlp-webui .
-
-# Run the container
-docker run -d \
-  --name yt-dlp-webui \
-  -p 8080:8080 \
-  -v $(pwd)/downloads:/downloads \
-  --restart unless-stopped \
-  yt-dlp-webui
-```
-
-#### Local Development
-
-```bash
-# 1. Install dependencies
-pip install -r requirements.txt
-pip install yt-dlp
-
-# 2. Install ffmpeg
-# macOS: brew install ffmpeg
-# Ubuntu: sudo apt install ffmpeg
-# Windows: https://ffmpeg.org/download.html
-
-# 3. Run the application
-python app.py
-
-# 4. Visit: http://localhost:8080
-```
-
-### 📖 Usage
-
-#### Download Video
-
-1. Paste video URL in the input field
-2. Select "Video" mode
-3. Choose video quality
-4. Click "Start Download"
-
-#### Download Audio
-
-1. Paste video URL in the input field
-2. Select "Audio" mode
-3. Choose audio format (MP3 recommended)
-4. Set audio quality (0-10, 0 is best)
-5. Click "Start Download"
-
-#### Manage Files
-
-- **View Files**: Check all downloaded files
-- **Download to Local**: Click "📥 Download" button
-- **Delete Files**: Click "🗑️ Delete" button
-
-### ⚙️ Configuration
-
-#### Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DOWNLOAD_DIR` | Download directory | `/downloads` (Docker) or `./downloads` (local) |
-| `PORT` | Web service port | `8080` |
-| `TZ` | Timezone | `UTC` |
-
-### 📝 Supported Sites
-
-yt-dlp supports 1000+ websites including:
-
-- **Video Platforms**: YouTube, Bilibili, Vimeo, Dailymotion
-- **Social Media**: Twitter, Facebook, Instagram, TikTok
-- **Live Streaming**: Twitch, YouTube Live
-- **More**: See [full list](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)
-
-### 🤝 Contributing
-
-Issues and Pull Requests are welcome!
-
-### 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
-### 🙏 Credits
-
-- [yt-dlp](https://github.com/yt-dlp/yt-dlp) - Powerful video downloader
-- [Flask](https://flask.palletsprojects.com/) - Web framework
-- [FFmpeg](https://ffmpeg.org/) - Multimedia processing
-
-### ⚠️ Disclaimer
-
-This tool is for educational and personal use only. Please comply with the terms of service and copyright laws of relevant websites.

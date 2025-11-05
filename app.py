@@ -77,9 +77,18 @@ def run_ytdlp_download(task_id, url, options):
             cmd.append('--sub-lang')
             cmd.append(options.get('sub_lang', 'en'))
 
+        # Playlist handling
+        playlist_items = options.get('playlist_items', None)
+        if playlist_items:
+            # Download specific items from playlist
+            cmd.extend(['--playlist-items', playlist_items])
+            cmd.append('--yes-playlist')
+        else:
+            # Default to single video (no playlist)
+            cmd.append('--no-playlist')
+
         # Progress output
         cmd.append('--newline')
-        cmd.append('--no-playlist')  # Default to single video
 
         # Add URL
         cmd.append(url)
@@ -153,6 +162,69 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/api/playlist', methods=['POST'])
+def get_playlist_info():
+    """Get playlist information"""
+    data = request.get_json()
+    url = data.get('url', '').strip()
+
+    if not url:
+        return jsonify({'error': 'URL is required'}), 400
+
+    try:
+        # Use yt-dlp to get playlist info
+        cmd = [
+            'yt-dlp',
+            '--flat-playlist',
+            '--dump-json',
+            '--no-warnings',
+            url
+        ]
+
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True
+        )
+
+        stdout, stderr = process.communicate(timeout=30)
+
+        if process.returncode != 0:
+            return jsonify({'error': 'Failed to fetch playlist info', 'details': stderr}), 400
+
+        # Parse JSON output (one JSON object per line)
+        videos = []
+        for line in stdout.strip().split('\n'):
+            if line:
+                try:
+                    video_info = json.loads(line)
+                    videos.append({
+                        'id': video_info.get('id', ''),
+                        'title': video_info.get('title', 'Unknown Title'),
+                        'url': video_info.get('url', ''),
+                        'duration': video_info.get('duration', 0),
+                        'thumbnail': video_info.get('thumbnail', ''),
+                    })
+                except json.JSONDecodeError:
+                    continue
+
+        if not videos:
+            # Maybe it's a single video, not a playlist
+            return jsonify({'is_playlist': False, 'message': 'This appears to be a single video, not a playlist'})
+
+        return jsonify({
+            'is_playlist': True,
+            'video_count': len(videos),
+            'videos': videos
+        })
+
+    except subprocess.TimeoutExpired:
+        return jsonify({'error': 'Request timeout'}), 408
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/download', methods=['POST'])
 def download():
     """Start a new download"""
@@ -174,7 +246,8 @@ def download():
         'embed_thumbnail': data.get('embed_thumbnail', False),
         'embed_metadata': data.get('embed_metadata', True),
         'write_subs': data.get('write_subs', False),
-        'sub_lang': data.get('sub_lang', 'en')
+        'sub_lang': data.get('sub_lang', 'en'),
+        'playlist_items': data.get('playlist_items', None)  # e.g. "1,2,5-8"
     }
 
     # Initialize task status

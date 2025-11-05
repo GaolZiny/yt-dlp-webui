@@ -288,11 +288,52 @@
             display: none;
         }
 
+        .playlist-video-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f8f9ff;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .playlist-video-item:hover {
+            background: #e8e9ff;
+        }
+
+        .playlist-video-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .playlist-video-info {
+            flex: 1;
+        }
+
+        .playlist-video-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .playlist-video-duration {
+            font-size: 12px;
+            color: #666;
+        }
+
         h2 {
             color: #333;
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid #f0f0f0;
+        }
+
+        h3 {
+            color: #667eea;
+            margin-bottom: 15px;
         }
 
         @media (max-width: 768px) {
@@ -318,7 +359,14 @@
     <div class="container">
         <div class="header">
             <h1>🎬 yt-dlp Web UI</h1>
-            <p>轻松下载视频和音频</p>
+            <p data-i18n="header.subtitle">轻松下载视频和音频</p>
+
+            <!-- Language selector -->
+            <div style="margin-top: 15px;">
+                <button class="btn btn-secondary" onclick="switchLanguage('zh')" style="margin: 0 5px; padding: 8px 15px;">中文</button>
+                <button class="btn btn-secondary" onclick="switchLanguage('en')" style="margin: 0 5px; padding: 8px 15px;">English</button>
+                <button class="btn btn-secondary" onclick="switchLanguage('ja')" style="margin: 0 5px; padding: 8px 15px;">日本語</button>
+            </div>
         </div>
 
         <!-- Alert messages -->
@@ -326,30 +374,45 @@
 
         <!-- Main download form -->
         <div class="main-card">
-            <h2>新建下载</h2>
+            <h2 data-i18n="download.title">新建下载</h2>
 
             <form id="downloadForm">
                 <div class="form-group">
-                    <label for="url">视频/音频链接 *</label>
+                    <label for="url" data-i18n="download.url.label">视频/音频链接 *</label>
                     <input
                         type="text"
                         id="url"
                         name="url"
+                        data-i18n="download.url.placeholder"
                         placeholder="粘贴 YouTube、Bilibili 等网站链接..."
                         required
                     />
+                    <button type="button" class="btn btn-secondary" onclick="checkPlaylist()" style="margin-top: 10px;" data-i18n="download.check_playlist">
+                        🔍 检查播放列表
+                    </button>
+                </div>
+
+                <!-- Playlist selection -->
+                <div id="playlistSection" class="hidden" style="margin-bottom: 20px;">
+                    <h3 style="margin-bottom: 15px;"><span data-i18n="playlist.title">📋 播放列表</span>（<span id="playlistCount">0</span> <span data-i18n="playlist.count">个视频</span>）</h3>
+                    <div style="margin-bottom: 10px;">
+                        <button type="button" class="btn btn-secondary" onclick="selectAllVideos()" style="margin-right: 10px;" data-i18n="playlist.select_all">全选</button>
+                        <button type="button" class="btn btn-secondary" onclick="deselectAllVideos()" data-i18n="playlist.deselect_all">全不选</button>
+                    </div>
+                    <div id="playlistVideos" style="max-height: 400px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px;">
+                    </div>
                 </div>
 
                 <div class="mode-selector">
                     <label class="mode-option active">
                         <input type="radio" name="mode" value="video" checked />
                         <div class="icon">🎥</div>
-                        <div>视频</div>
+                        <div data-i18n="mode.video">视频</div>
                     </label>
                     <label class="mode-option">
                         <input type="radio" name="mode" value="audio" />
                         <div class="icon">🎵</div>
-                        <div>音频</div>
+                        <div data-i18n="mode.audio">音频</div>
                     </label>
                 </div>
 
@@ -357,7 +420,7 @@
                 <div id="audioOptions" class="hidden">
                     <div class="options-grid">
                         <div class="form-group">
-                            <label for="audioFormat">音频格式</label>
+                            <label for="audioFormat" data-i18n="audio.format">音频格式</label>
                             <select id="audioFormat" name="audio_format">
                                 <option value="mp3">MP3</option>
                                 <option value="aac">AAC</option>
@@ -368,7 +431,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="audioQuality">音频质量 (0=最好, 10=最差)</label>
+                            <label for="audioQuality" data-i18n="audio.quality">音频质量 (0=最好, 10=最差)</label>
                             <input
                                 type="number"
                                 id="audioQuality"
@@ -384,14 +447,14 @@
                 <!-- Video options -->
                 <div id="videoOptions">
                     <div class="form-group">
-                        <label for="videoFormat">视频格式</label>
+                        <label for="videoFormat" data-i18n="video.format">视频格式</label>
                         <select id="videoFormat" name="video_format">
-                            <option value="best">最佳质量</option>
-                            <option value="bestvideo+bestaudio">最佳视频+音频</option>
-                            <option value="worst">最低质量（节省空间）</option>
-                            <option value="bestvideo[height<=720]+bestaudio">720p</option>
-                            <option value="bestvideo[height<=1080]+bestaudio">1080p</option>
-                            <option value="bestvideo[height<=2160]+bestaudio">4K</option>
+                            <option value="best" data-i18n="video.best">最佳质量</option>
+                            <option value="bestvideo+bestaudio" data-i18n="video.best_merge">最佳视频+音频</option>
+                            <option value="worst" data-i18n="video.worst">最低质量（节省空间）</option>
+                            <option value="bestvideo[height<=720]+bestaudio" data-i18n="video.720p">720p</option>
+                            <option value="bestvideo[height<=1080]+bestaudio" data-i18n="video.1080p">1080p</option>
+                            <option value="bestvideo[height<=2160]+bestaudio" data-i18n="video.4k">4K</option>
                         </select>
                     </div>
                 </div>
@@ -400,44 +463,230 @@
                 <div class="options-grid">
                     <div class="checkbox-group">
                         <input type="checkbox" id="embedThumbnail" name="embed_thumbnail" />
-                        <label for="embedThumbnail">嵌入缩略图</label>
+                        <label for="embedThumbnail" data-i18n="options.embed_thumbnail">嵌入缩略图</label>
                     </div>
                     <div class="checkbox-group">
                         <input type="checkbox" id="embedMetadata" name="embed_metadata" checked />
-                        <label for="embedMetadata">嵌入元数据</label>
+                        <label for="embedMetadata" data-i18n="options.embed_metadata">嵌入元数据</label>
                     </div>
                     <div class="checkbox-group">
                         <input type="checkbox" id="writeSubs" name="write_subs" />
-                        <label for="writeSubs">下载字幕</label>
+                        <label for="writeSubs" data-i18n="options.write_subs">下载字幕</label>
                     </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary" id="downloadBtn">
-                    <span>⬇️ 开始下载</span>
+                    <span data-i18n="button.download">⬇️ 开始下载</span>
                 </button>
             </form>
 
             <!-- Progress section -->
             <div class="progress-section" id="progressSection">
-                <h2>下载进度</h2>
+                <h2 data-i18n="progress.title">下载进度</h2>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressBar">0%</div>
                 </div>
-                <div class="progress-message" id="progressMessage">准备下载...</div>
+                <div class="progress-message" id="progressMessage" data-i18n="progress.preparing">准备下载...</div>
             </div>
         </div>
 
         <!-- Downloaded files -->
         <div class="main-card files-section">
-            <h2>已下载文件</h2>
-            <button class="btn btn-secondary" onclick="refreshFiles()">🔄 刷新列表</button>
+            <h2 data-i18n="files.title">已下载文件</h2>
+            <button class="btn btn-secondary" onclick="refreshFiles()" data-i18n="files.refresh">🔄 刷新列表</button>
             <div class="files-list" id="filesList">
-                <p style="text-align: center; color: #666; padding: 20px;">暂无文件</p>
+                <p style="text-align: center; color: #666; padding: 20px;" data-i18n="files.empty">暂无文件</p>
             </div>
         </div>
     </div>
 
     <script>
+        // Multi-language support
+        const translations = {
+            zh: {
+                'header.subtitle': '轻松下载视频和音频',
+                'download.title': '新建下载',
+                'download.url.label': '视频/音频链接 *',
+                'download.url.placeholder': '粘贴 YouTube、Bilibili 等网站链接...',
+                'download.check_playlist': '🔍 检查播放列表',
+                'playlist.title': '📋 播放列表',
+                'playlist.count': '个视频',
+                'playlist.select_all': '全选',
+                'playlist.deselect_all': '全不选',
+                'playlist.duration': '时长',
+                'mode.video': '视频',
+                'mode.audio': '音频',
+                'audio.format': '音频格式',
+                'audio.quality': '音频质量 (0=最好, 10=最差)',
+                'video.format': '视频格式',
+                'video.best': '最佳质量',
+                'video.best_merge': '最佳视频+音频',
+                'video.worst': '最低质量（节省空间）',
+                'video.720p': '720p',
+                'video.1080p': '1080p',
+                'video.4k': '4K',
+                'options.embed_thumbnail': '嵌入缩略图',
+                'options.embed_metadata': '嵌入元数据',
+                'options.write_subs': '下载字幕',
+                'button.download': '⬇️ 开始下载',
+                'button.processing': '⏳ 正在处理...',
+                'progress.title': '下载进度',
+                'progress.preparing': '准备下载...',
+                'files.title': '已下载文件',
+                'files.refresh': '🔄 刷新列表',
+                'files.empty': '暂无文件',
+                'files.size': '大小',
+                'files.modified': '修改时间',
+                'files.download': '📥 下载',
+                'files.delete': '🗑️ 删除',
+                'alert.url_required': '请先输入链接',
+                'alert.playlist_found': '发现播放列表，共',
+                'alert.single_video': '这是单个视频，不是播放列表',
+                'alert.playlist_fetch_failed': '获取播放列表失败',
+                'alert.network_error': '网络错误',
+                'alert.task_created': '下载任务已创建！',
+                'alert.task_failed': '创建下载任务失败',
+                'alert.download_complete': '下载完成！',
+                'alert.download_failed': '下载失败',
+                'alert.file_deleted': '文件已删除',
+                'alert.delete_failed': '删除失败',
+                'alert.delete_confirm': '确定要删除文件',
+                'alert.files_fetch_failed': '获取文件列表失败'
+            },
+            en: {
+                'header.subtitle': 'Download videos and audio easily',
+                'download.title': 'New Download',
+                'download.url.label': 'Video/Audio URL *',
+                'download.url.placeholder': 'Paste YouTube, Bilibili, etc. link...',
+                'download.check_playlist': '🔍 Check Playlist',
+                'playlist.title': '📋 Playlist',
+                'playlist.count': 'videos',
+                'playlist.select_all': 'Select All',
+                'playlist.deselect_all': 'Deselect All',
+                'playlist.duration': 'Duration',
+                'mode.video': 'Video',
+                'mode.audio': 'Audio',
+                'audio.format': 'Audio Format',
+                'audio.quality': 'Audio Quality (0=Best, 10=Worst)',
+                'video.format': 'Video Format',
+                'video.best': 'Best Quality',
+                'video.best_merge': 'Best Video+Audio',
+                'video.worst': 'Worst Quality (Save Space)',
+                'video.720p': '720p',
+                'video.1080p': '1080p',
+                'video.4k': '4K',
+                'options.embed_thumbnail': 'Embed Thumbnail',
+                'options.embed_metadata': 'Embed Metadata',
+                'options.write_subs': 'Download Subtitles',
+                'button.download': '⬇️ Start Download',
+                'button.processing': '⏳ Processing...',
+                'progress.title': 'Download Progress',
+                'progress.preparing': 'Preparing download...',
+                'files.title': 'Downloaded Files',
+                'files.refresh': '🔄 Refresh List',
+                'files.empty': 'No files',
+                'files.size': 'Size',
+                'files.modified': 'Modified',
+                'files.download': '📥 Download',
+                'files.delete': '🗑️ Delete',
+                'alert.url_required': 'Please enter a URL first',
+                'alert.playlist_found': 'Playlist found with',
+                'alert.single_video': 'This is a single video, not a playlist',
+                'alert.playlist_fetch_failed': 'Failed to fetch playlist',
+                'alert.network_error': 'Network error',
+                'alert.task_created': 'Download task created!',
+                'alert.task_failed': 'Failed to create download task',
+                'alert.download_complete': 'Download complete!',
+                'alert.download_failed': 'Download failed',
+                'alert.file_deleted': 'File deleted',
+                'alert.delete_failed': 'Delete failed',
+                'alert.delete_confirm': 'Are you sure to delete file',
+                'alert.files_fetch_failed': 'Failed to fetch file list'
+            },
+            ja: {
+                'header.subtitle': '動画と音声を簡単にダウンロード',
+                'download.title': '新規ダウンロード',
+                'download.url.label': '動画/音声URL *',
+                'download.url.placeholder': 'YouTube、Bilibiliなどのリンクを貼り付け...',
+                'download.check_playlist': '🔍 プレイリストを確認',
+                'playlist.title': '📋 プレイリスト',
+                'playlist.count': '本の動画',
+                'playlist.select_all': 'すべて選択',
+                'playlist.deselect_all': 'すべて解除',
+                'playlist.duration': '長さ',
+                'mode.video': '動画',
+                'mode.audio': '音声',
+                'audio.format': '音声形式',
+                'audio.quality': '音声品質 (0=最高, 10=最低)',
+                'video.format': '動画形式',
+                'video.best': '最高品質',
+                'video.best_merge': '最高動画+音声',
+                'video.worst': '最低品質（容量節約）',
+                'video.720p': '720p',
+                'video.1080p': '1080p',
+                'video.4k': '4K',
+                'options.embed_thumbnail': 'サムネイル埋め込み',
+                'options.embed_metadata': 'メタデータ埋め込み',
+                'options.write_subs': '字幕ダウンロード',
+                'button.download': '⬇️ ダウンロード開始',
+                'button.processing': '⏳ 処理中...',
+                'progress.title': 'ダウンロード進捗',
+                'progress.preparing': 'ダウンロード準備中...',
+                'files.title': 'ダウンロード済みファイル',
+                'files.refresh': '🔄 リスト更新',
+                'files.empty': 'ファイルなし',
+                'files.size': 'サイズ',
+                'files.modified': '更新日時',
+                'files.download': '📥 ダウンロード',
+                'files.delete': '🗑️ 削除',
+                'alert.url_required': '先にURLを入力してください',
+                'alert.playlist_found': 'プレイリストが見つかりました。合計',
+                'alert.single_video': 'これは単一の動画です',
+                'alert.playlist_fetch_failed': 'プレイリストの取得に失敗',
+                'alert.network_error': 'ネットワークエラー',
+                'alert.task_created': 'ダウンロードタスクを作成しました！',
+                'alert.task_failed': 'ダウンロードタスクの作成に失敗',
+                'alert.download_complete': 'ダウンロード完了！',
+                'alert.download_failed': 'ダウンロード失敗',
+                'alert.file_deleted': 'ファイルを削除しました',
+                'alert.delete_failed': '削除失敗',
+                'alert.delete_confirm': 'ファイルを削除してもよろしいですか',
+                'alert.files_fetch_failed': 'ファイルリストの取得に失敗'
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || 'zh';
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            updatePageLanguage();
+        }
+
+        function updatePageLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                const translation = translations[currentLanguage][key];
+                if (translation) {
+                    if (element.tagName === 'INPUT' && element.placeholder !== undefined) {
+                        element.placeholder = translation;
+                    } else {
+                        element.textContent = translation;
+                    }
+                }
+            });
+
+            // Update button text separately
+            const downloadBtn = document.getElementById('downloadBtn');
+            if (downloadBtn && !downloadBtn.disabled) {
+                downloadBtn.querySelector('span').textContent = translations[currentLanguage]['button.download'];
+            }
+        }
+
+        function t(key) {
+            return translations[currentLanguage][key] || key;
+        }
+
         // Mode selector
         document.querySelectorAll('.mode-option').forEach(option => {
             option.addEventListener('click', function() {
@@ -477,6 +726,95 @@
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
         }
 
+        // Playlist functionality
+        let playlistData = null;
+
+        async function checkPlaylist() {
+            const url = document.getElementById('url').value.trim();
+            if (!url) {
+                showAlert(t('alert.url_required'), 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/playlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    if (result.is_playlist) {
+                        playlistData = result;
+                        displayPlaylist(result.videos);
+                        showAlert(`${t('alert.playlist_found')} ${result.video_count} ${t('playlist.count')}`, 'success');
+                    } else {
+                        showAlert(t('alert.single_video'), 'success');
+                        document.getElementById('playlistSection').classList.add('hidden');
+                    }
+                } else {
+                    showAlert(result.error || t('alert.playlist_fetch_failed'), 'error');
+                }
+            } catch (error) {
+                showAlert(t('alert.network_error') + ': ' + error.message, 'error');
+            }
+        }
+
+        function displayPlaylist(videos) {
+            const playlistSection = document.getElementById('playlistSection');
+            const playlistVideos = document.getElementById('playlistVideos');
+            const playlistCount = document.getElementById('playlistCount');
+
+            playlistCount.textContent = videos.length;
+
+            playlistVideos.innerHTML = videos.map((video, index) => {
+                const duration = video.duration ? formatDuration(video.duration) : '';
+                return `
+                    <div class="playlist-video-item">
+                        <input type="checkbox" class="playlist-checkbox" data-index="${index + 1}" checked />
+                        <div class="playlist-video-info">
+                            <div class="playlist-video-title">${index + 1}. ${video.title}</div>
+                            ${duration ? `<div class="playlist-video-duration">${t('playlist.duration')}: ${duration}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            playlistSection.classList.remove('hidden');
+        }
+
+        function formatDuration(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+
+            if (hours > 0) {
+                return `${hours}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${String(secs).padStart(2, '0')}`;
+            }
+        }
+
+        function selectAllVideos() {
+            document.querySelectorAll('.playlist-checkbox').forEach(cb => cb.checked = true);
+        }
+
+        function deselectAllVideos() {
+            document.querySelectorAll('.playlist-checkbox').forEach(cb => cb.checked = false);
+        }
+
+        function getSelectedPlaylistItems() {
+            const checkboxes = document.querySelectorAll('.playlist-checkbox:checked');
+            if (checkboxes.length === 0) return null;
+
+            const indices = Array.from(checkboxes).map(cb => cb.dataset.index);
+            return indices.join(',');
+        }
+
         // Download form submit
         document.getElementById('downloadForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -490,12 +828,13 @@
                 video_format: formData.get('video_format'),
                 embed_thumbnail: formData.get('embed_thumbnail') === 'on',
                 embed_metadata: formData.get('embed_metadata') === 'on',
-                write_subs: formData.get('write_subs') === 'on'
+                write_subs: formData.get('write_subs') === 'on',
+                playlist_items: getSelectedPlaylistItems()  // Add playlist selection
             };
 
             const downloadBtn = document.getElementById('downloadBtn');
             downloadBtn.disabled = true;
-            downloadBtn.querySelector('span').textContent = '⏳ 正在处理...';
+            downloadBtn.querySelector('span').textContent = t('button.processing');
 
             try {
                 const response = await fetch('/api/download', {
@@ -509,18 +848,18 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    showAlert('下载任务已创建！', 'success');
+                    showAlert(t('alert.task_created'), 'success');
                     document.getElementById('progressSection').style.display = 'block';
                     monitorProgress(result.task_id);
                 } else {
-                    showAlert(result.error || '创建下载任务失败', 'error');
+                    showAlert(result.error || t('alert.task_failed'), 'error');
                     downloadBtn.disabled = false;
-                    downloadBtn.querySelector('span').textContent = '⬇️ 开始下载';
+                    downloadBtn.querySelector('span').textContent = t('button.download');
                 }
             } catch (error) {
-                showAlert('网络错误: ' + error.message, 'error');
+                showAlert(t('alert.network_error') + ': ' + error.message, 'error');
                 downloadBtn.disabled = false;
-                downloadBtn.querySelector('span').textContent = '⬇️ 开始下载';
+                downloadBtn.querySelector('span').textContent = t('button.download');
             }
         });
 
@@ -540,15 +879,15 @@
 
                     if (status.status === 'completed') {
                         clearInterval(interval);
-                        showAlert('下载完成！', 'success');
+                        showAlert(t('alert.download_complete'), 'success');
                         document.getElementById('downloadBtn').disabled = false;
-                        document.getElementById('downloadBtn').querySelector('span').textContent = '⬇️ 开始下载';
+                        document.getElementById('downloadBtn').querySelector('span').textContent = t('button.download');
                         refreshFiles();
                     } else if (status.status === 'failed') {
                         clearInterval(interval);
-                        showAlert('下载失败: ' + status.message, 'error');
+                        showAlert(t('alert.download_failed') + ': ' + status.message, 'error');
                         document.getElementById('downloadBtn').disabled = false;
-                        document.getElementById('downloadBtn').querySelector('span').textContent = '⬇️ 开始下载';
+                        document.getElementById('downloadBtn').querySelector('span').textContent = t('button.download');
                     }
                 } catch (error) {
                     console.error('Error checking status:', error);
@@ -565,7 +904,7 @@
                 const filesList = document.getElementById('filesList');
 
                 if (data.files.length === 0) {
-                    filesList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">暂无文件</p>';
+                    filesList.innerHTML = `<p style="text-align: center; color: #666; padding: 20px;">${t('files.empty')}</p>`;
                     return;
                 }
 
@@ -576,23 +915,23 @@
                         <div class="file-info">
                             <div class="file-name">${file.name}</div>
                             <div class="file-meta">
-                                大小: ${formatFileSize(file.size)} |
-                                修改时间: ${new Date(file.modified).toLocaleString('zh-CN')}
+                                ${t('files.size')}: ${formatFileSize(file.size)} |
+                                ${t('files.modified')}: ${new Date(file.modified).toLocaleString()}
                             </div>
                         </div>
                         <div class="file-actions">
                             <button class="btn btn-download" data-filename="${escapedName}">
-                                📥 下载
+                                ${t('files.download')}
                             </button>
                             <button class="btn btn-danger" data-filename="${escapedName}">
-                                🗑️ 删除
+                                ${t('files.delete')}
                             </button>
                         </div>
                     </div>
                 `;
                 }).join('');
             } catch (error) {
-                showAlert('获取文件列表失败: ' + error.message, 'error');
+                showAlert(t('alert.files_fetch_failed') + ': ' + error.message, 'error');
             }
         }
 
@@ -603,7 +942,7 @@
 
         // Delete file
         async function deleteFile(filename) {
-            if (!confirm(`确定要删除文件 "${filename}" 吗？`)) {
+            if (!confirm(`${t('alert.delete_confirm')} "${filename}"?`)) {
                 return;
             }
 
@@ -613,14 +952,14 @@
                 });
 
                 if (response.ok) {
-                    showAlert('文件已删除', 'success');
+                    showAlert(t('alert.file_deleted'), 'success');
                     refreshFiles();
                 } else {
                     const data = await response.json();
-                    showAlert('删除失败: ' + (data.error || '未知错误'), 'error');
+                    showAlert(t('alert.delete_failed') + ': ' + (data.error || t('alert.network_error')), 'error');
                 }
             } catch (error) {
-                showAlert('删除失败: ' + error.message, 'error');
+                showAlert(t('alert.delete_failed') + ': ' + error.message, 'error');
             }
         }
 
@@ -651,6 +990,7 @@
 
         // Load files on page load
         window.addEventListener('load', function() {
+            updatePageLanguage();  // Initialize language
             refreshFiles();
         });
     </script>

@@ -1,4 +1,10 @@
-# 🚀 部署指南 / Deployment Guide
+# 🚀 部署指南 / Deployment Guide / デプロイガイド
+
+[English](#english) | [中文](#中文) | [日本語](#日本語)
+
+---
+
+## 中文
 
 本指南将帮助你将 yt-dlp Web UI 部署到新的 GitHub 仓库。
 
@@ -246,3 +252,505 @@ docker-compose up -d --build
 ---
 
 需要帮助？查看 [GitHub 文档](https://docs.github.com) 或提交 Issue。
+
+---
+
+## English
+
+This guide will help you deploy yt-dlp Web UI to a new GitHub repository.
+
+---
+
+### 📋 Step 1: Create New Repository on GitHub
+
+1. Visit [GitHub](https://github.com)
+2. Click "+" in top right → "New repository"
+3. Fill in information:
+   - **Repository name**: `yt-dlp-webui` (or your preferred name)
+   - **Description**: `A beautiful web UI for yt-dlp - Download videos and audio from 1000+ websites`
+   - **Public/Private**: Choose Public or Private
+   - **⚠️ Do NOT check**:
+     - ❌ Add a README file
+     - ❌ Add .gitignore
+     - ❌ Choose a license
+   (Because we already have these files)
+4. Click "Create repository"
+
+---
+
+### 📋 Step 2: Prepare Project Files
+
+On your Mac, create a new project directory:
+
+```bash
+# 1. Create new directory
+mkdir ~/yt-dlp-webui
+cd ~/yt-dlp-webui
+
+# 2. Initialize Git
+git init
+
+# 3. Copy files from old project
+cp -r ~/Desktop/dev/yt-dlp/yt-dlp/web-ui/* .
+
+# Or if you're still in yt-dlp directory
+# cd ~/Desktop/dev/yt-dlp/yt-dlp/web-ui
+# cp -r ./* ~/yt-dlp-webui/
+```
+
+---
+
+### 📋 Step 3: Clean Up and Optimize
+
+```bash
+cd ~/yt-dlp-webui
+
+# Delete old README, use new one
+rm README.md QUICKSTART.md
+mv README_NEW.md README.md
+
+# View project structure
+ls -la
+```
+
+You should see these files:
+```
+.
+├── .dockerignore
+├── .gitignore
+├── Dockerfile
+├── LICENSE
+├── README.md
+├── app.py
+├── docker-compose.yml
+├── requirements.txt
+├── start.sh
+├── stop.sh
+└── templates/
+    └── index.html
+```
+
+---
+
+### 📋 Step 4: Push to GitHub
+
+```bash
+# 1. Add all files
+git add .
+
+# 2. Create first commit
+git commit -m "Initial commit: yt-dlp Web UI
+
+- Beautiful web interface for yt-dlp
+- Support video and audio downloads
+- Support 1000+ websites
+- Docker ready
+- Real-time progress tracking
+- File management"
+
+# 3. Add remote repository (replace with your username and repo name)
+git remote add origin https://github.com/yourusername/yt-dlp-webui.git
+
+# 4. Push to GitHub
+git branch -M main
+git push -u origin main
+```
+
+---
+
+### 📋 Step 5: Verify Deployment
+
+Visit your GitHub repository page, you should see:
+
+- ✅ README displays properly with complete documentation
+- ✅ Code structure is clear
+- ✅ LICENSE file exists
+
+---
+
+### 📋 Step 6: Test Deployment
+
+#### Test Locally
+
+```bash
+cd ~/yt-dlp-webui
+
+# Using Docker
+docker-compose up -d
+
+# Or run locally
+python app.py
+```
+
+Visit: http://localhost:8080
+
+#### Deploy on NAS
+
+1. Clone project from GitHub to NAS:
+   ```bash
+   cd /your/nas/path
+   git clone https://github.com/yourusername/yt-dlp-webui.git
+   cd yt-dlp-webui
+   ```
+
+2. Modify docker-compose.yml:
+   ```yaml
+   volumes:
+     - /volume1/downloads:/downloads  # Change to your NAS path
+   ```
+
+3. Start service:
+   ```bash
+   docker-compose up -d
+   ```
+
+4. Visit: http://NAS-IP:8080
+
+---
+
+### 🎯 Optional Steps
+
+#### Add Screenshots
+
+1. Run the app and take screenshots
+2. Create `screenshots` directory in GitHub repo
+3. Upload screenshots
+4. Add to README.md:
+   ```markdown
+   ### 📸 Interface Preview
+
+   ![Main Interface](screenshots/main.png)
+   ![Downloading](screenshots/downloading.png)
+   ```
+
+#### Add GitHub Topics
+
+On GitHub repository page:
+1. Click settings icon next to "About"
+2. Add Topics (tags):
+   - `yt-dlp`
+   - `video-downloader`
+   - `youtube-dl`
+   - `web-ui`
+   - `flask`
+   - `docker`
+   - `nas`
+
+#### Enable GitHub Actions (Optional)
+
+Create `.github/workflows/docker-build.yml` for automatic Docker image building.
+
+---
+
+### 🎉 Done!
+
+Now you have a clean, independent GitHub project!
+
+**Project Link**: `https://github.com/yourusername/yt-dlp-webui`
+
+You can:
+- Share with others
+- Receive Issues and Pull Requests
+- Continue improving features
+
+---
+
+### 📝 Ongoing Maintenance
+
+#### Update Code
+
+```bash
+cd ~/yt-dlp-webui
+
+# Make changes...
+
+git add .
+git commit -m "Describe your changes"
+git push
+```
+
+#### Update Deployment on NAS
+
+```bash
+cd /your/nas/path/yt-dlp-webui
+
+# Pull latest code
+git pull
+
+# Rebuild and restart
+docker-compose down
+docker-compose up -d --build
+```
+
+---
+
+### ❓ FAQ
+
+**Q: How to change repository name?**
+- Go to GitHub repository Settings → General → Repository name
+
+**Q: How to make repository private?**
+- Go to GitHub repository Settings → Danger Zone → Change visibility
+
+**Q: Need password when pushing?**
+- Use GitHub Personal Access Token instead of password
+- Settings → Developer settings → Personal access tokens
+
+**Q: How to let others contribute?**
+- Public repo: Anyone can submit Pull Requests
+- Private repo: Need to invite collaborators
+
+---
+
+Need help? Check [GitHub Docs](https://docs.github.com) or submit an Issue.
+
+---
+
+## 日本語
+
+このガイドは、yt-dlp Web UIを新しいGitHubリポジトリにデプロイする方法を説明します。
+
+---
+
+### 📋 ステップ1：GitHubで新しいリポジトリを作成
+
+1. [GitHub](https://github.com)にアクセス
+2. 右上の「+」→「New repository」をクリック
+3. 情報を入力：
+   - **Repository name**: `yt-dlp-webui` （またはお好みの名前）
+   - **Description**: `A beautiful web UI for yt-dlp - Download videos and audio from 1000+ websites`
+   - **Public/Private**: PublicまたはPrivateを選択
+   - **⚠️ チェックしないでください**：
+     - ❌ Add a README file
+     - ❌ Add .gitignore
+     - ❌ Choose a license
+   （これらのファイルは既に用意されているため）
+4. 「Create repository」をクリック
+
+---
+
+### 📋 ステップ2：プロジェクトファイルを準備
+
+Macで新しいプロジェクトディレクトリを作成：
+
+```bash
+# 1. 新しいディレクトリを作成
+mkdir ~/yt-dlp-webui
+cd ~/yt-dlp-webui
+
+# 2. Gitを初期化
+git init
+
+# 3. 旧プロジェクトからファイルをコピー
+cp -r ~/Desktop/dev/yt-dlp/yt-dlp/web-ui/* .
+
+# または、yt-dlpディレクトリ内にいる場合
+# cd ~/Desktop/dev/yt-dlp/yt-dlp/web-ui
+# cp -r ./* ~/yt-dlp-webui/
+```
+
+---
+
+### 📋 ステップ3：クリーンアップと最適化
+
+```bash
+cd ~/yt-dlp-webui
+
+# 古いREADMEを削除し、新しいものを使用
+rm README.md QUICKSTART.md
+mv README_NEW.md README.md
+
+# プロジェクト構造を確認
+ls -la
+```
+
+以下のファイルが表示されるはずです：
+```
+.
+├── .dockerignore
+├── .gitignore
+├── Dockerfile
+├── LICENSE
+├── README.md
+├── app.py
+├── docker-compose.yml
+├── requirements.txt
+├── start.sh
+├── stop.sh
+└── templates/
+    └── index.html
+```
+
+---
+
+### 📋 ステップ4：GitHubにプッシュ
+
+```bash
+# 1. すべてのファイルを追加
+git add .
+
+# 2. 最初のコミットを作成
+git commit -m "Initial commit: yt-dlp Web UI
+
+- Beautiful web interface for yt-dlp
+- Support video and audio downloads
+- Support 1000+ websites
+- Docker ready
+- Real-time progress tracking
+- File management"
+
+# 3. リモートリポジトリを追加（ユーザー名とリポジトリ名を置き換えてください）
+git remote add origin https://github.com/yourusername/yt-dlp-webui.git
+
+# 4. GitHubにプッシュ
+git branch -M main
+git push -u origin main
+```
+
+---
+
+### 📋 ステップ5：デプロイを確認
+
+GitHubリポジトリページにアクセスし、以下を確認：
+
+- ✅ READMEが正しく表示され、完全なドキュメントがある
+- ✅ コード構造が明確
+- ✅ LICENSEファイルが存在する
+
+---
+
+### 📋 ステップ6：デプロイをテスト
+
+#### ローカルでテスト
+
+```bash
+cd ~/yt-dlp-webui
+
+# Dockerを使用
+docker-compose up -d
+
+# またはローカルで実行
+python app.py
+```
+
+アクセス：http://localhost:8080
+
+#### NASにデプロイ
+
+1. GitHubからNASにプロジェクトをクローン：
+   ```bash
+   cd /your/nas/path
+   git clone https://github.com/yourusername/yt-dlp-webui.git
+   cd yt-dlp-webui
+   ```
+
+2. docker-compose.ymlを変更：
+   ```yaml
+   volumes:
+     - /volume1/downloads:/downloads  # NASのパスに変更
+   ```
+
+3. サービスを起動：
+   ```bash
+   docker-compose up -d
+   ```
+
+4. アクセス：http://NASのIP:8080
+
+---
+
+### 🎯 オプションステップ
+
+#### スクリーンショットを追加
+
+1. アプリを実行してスクリーンショットを撮影
+2. GitHubリポジトリに`screenshots`ディレクトリを作成
+3. スクリーンショットをアップロード
+4. README.mdに追加：
+   ```markdown
+   ### 📸 インターフェースプレビュー
+
+   ![メイン画面](screenshots/main.png)
+   ![ダウンロード中](screenshots/downloading.png)
+   ```
+
+#### GitHub Topicsを追加
+
+GitHubリポジトリページで：
+1. 「About」の横の設定アイコンをクリック
+2. Topics（タグ）を追加：
+   - `yt-dlp`
+   - `video-downloader`
+   - `youtube-dl`
+   - `web-ui`
+   - `flask`
+   - `docker`
+   - `nas`
+
+#### GitHub Actionsを有効化（オプション）
+
+自動Dockerイメージビルド用に`.github/workflows/docker-build.yml`を作成。
+
+---
+
+### 🎉 完了！
+
+これで、クリーンで独立したGitHubプロジェクトができました！
+
+**プロジェクトリンク**：`https://github.com/yourusername/yt-dlp-webui`
+
+以下が可能です：
+- 他の人と共有
+- IssueとPull Requestを受け取る
+- 機能を継続的に改善
+
+---
+
+### 📝 継続的なメンテナンス
+
+#### コードを更新
+
+```bash
+cd ~/yt-dlp-webui
+
+# 変更を加える...
+
+git add .
+git commit -m "変更内容を説明"
+git push
+```
+
+#### NAS上のデプロイを更新
+
+```bash
+cd /your/nas/path/yt-dlp-webui
+
+# 最新のコードを取得
+git pull
+
+# 再ビルドして再起動
+docker-compose down
+docker-compose up -d --build
+```
+
+---
+
+### ❓ よくある質問
+
+**Q: リポジトリ名を変更するには？**
+- GitHubリポジトリのSettings → General → Repository name
+
+**Q: リポジトリを非公開にするには？**
+- GitHubリポジトリのSettings → Danger Zone → Change visibility
+
+**Q: プッシュ時にパスワードが必要？**
+- パスワードの代わりにGitHub Personal Access Tokenを使用
+- Settings → Developer settings → Personal access tokens
+
+**Q: 他の人にコードを貢献してもらうには？**
+- Publicリポジトリ：誰でもPull Requestを提出可能
+- Privateリポジトリ：コラボレーターを招待する必要があります
+
+---
+
+ヘルプが必要ですか？[GitHubドキュメント](https://docs.github.com)を確認するか、Issueを提出してください。
