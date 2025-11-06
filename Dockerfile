@@ -21,6 +21,10 @@ RUN pip install --no-cache-dir yt-dlp
 # Copy application files
 COPY app.py .
 COPY templates ./templates
+COPY entrypoint.sh .
+
+# Make entrypoint script executable
+RUN chmod +x entrypoint.sh
 
 # Create downloads directory
 RUN mkdir -p /downloads
@@ -36,5 +40,5 @@ ENV DOWNLOAD_DIR=/downloads
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"
 
-# Run the application
-CMD ["python", "app.py"]
+# Run the application via entrypoint script (auto-updates yt-dlp on startup)
+CMD ["./entrypoint.sh"]
