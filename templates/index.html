@@ -81,7 +81,7 @@
         .form-group select:focus,
         .form-group input[type="number"]:focus {
             outline: none;
-            border-color: #4facfe;
+            border-color: #3d6ba3;
             background: #1a2845;
         }
 
@@ -104,14 +104,14 @@
         }
 
         .mode-option:hover {
-            border-color: #4facfe;
+            border-color: #3d6ba3;
             background: #1a2845;
             color: #e0e0e0;
         }
 
         .mode-option.active {
-            border-color: #4facfe;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-color: #3d6ba3;
+            background: #2c5282;
             color: white;
         }
 
@@ -129,11 +129,6 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
             margin-top: 20px;
-        }
-
-        /* Fix jumping issue when switching between audio and video modes */
-        #audioOptions, #videoOptions {
-            min-height: 75px;
         }
 
         .checkbox-group {
@@ -162,7 +157,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: #2c5282;
             color: white;
             width: 100%;
             justify-content: center;
@@ -170,8 +165,9 @@
         }
 
         .btn-primary:hover {
+            background: #3d6ba3;
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(79, 172, 254, 0.4);
+            box-shadow: 0 5px 20px rgba(44, 82, 130, 0.4);
         }
 
         .btn-primary:disabled {
@@ -230,7 +226,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            background: #2c5282;
             transition: width 0.3s;
             display: flex;
             align-items: center;
@@ -471,16 +467,18 @@
 
                 <!-- Video options -->
                 <div id="videoOptions">
-                    <div class="form-group">
-                        <label for="videoFormat" data-i18n="video.format">视频格式</label>
-                        <select id="videoFormat" name="video_format">
-                            <option value="best" data-i18n="video.best">最佳质量</option>
-                            <option value="bestvideo+bestaudio" data-i18n="video.best_merge">最佳视频+音频</option>
-                            <option value="worst" data-i18n="video.worst">最低质量（节省空间）</option>
-                            <option value="bestvideo[height<=720]+bestaudio" data-i18n="video.720p">720p</option>
-                            <option value="bestvideo[height<=1080]+bestaudio" data-i18n="video.1080p">1080p</option>
-                            <option value="bestvideo[height<=2160]+bestaudio" data-i18n="video.4k">4K</option>
-                        </select>
+                    <div class="options-grid">
+                        <div class="form-group">
+                            <label for="videoFormat" data-i18n="video.format">视频格式</label>
+                            <select id="videoFormat" name="video_format">
+                                <option value="best" data-i18n="video.best">最佳质量</option>
+                                <option value="bestvideo+bestaudio" data-i18n="video.best_merge">最佳视频+音频</option>
+                                <option value="worst" data-i18n="video.worst">最低质量（节省空间）</option>
+                                <option value="bestvideo[height<=720]+bestaudio" data-i18n="video.720p">720p</option>
+                                <option value="bestvideo[height<=1080]+bestaudio" data-i18n="video.1080p">1080p</option>
+                                <option value="bestvideo[height<=2160]+bestaudio" data-i18n="video.4k">4K</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
