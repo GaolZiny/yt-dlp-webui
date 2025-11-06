@@ -487,15 +487,16 @@
 
                     <!-- Subtitle language selection -->
                     <div id="subtitleLanguages" style="margin-top: 10px;">
-                        <label style="display: block; margin-bottom: 8px; font-weight: 600;" data-i18n="subtitle.languages">字幕语言：</label>
-
                         <button type="button" class="btn btn-secondary" onclick="checkSubtitles()" style="margin-bottom: 10px; padding: 8px 15px; font-size: 14px;" data-i18n="subtitle.check_available">
                             🔍 查看可用字幕
                         </button>
 
                         <!-- Available subtitles display with checkboxes -->
                         <div id="availableSubtitles" class="hidden" style="margin-bottom: 15px; padding: 10px; background: white; border-radius: 6px; border: 1px solid #e0e0e0;">
-                            <div style="font-weight: 600; margin-bottom: 8px;" data-i18n="subtitle.available">可用字幕：</div>
+                            <div style="margin-bottom: 8px;">
+                                <span style="font-weight: 600;" data-i18n="subtitle.available">可用字幕：</span>
+                                <span style="font-size: 11px; color: #666; margin-left: 8px;" data-i18n="subtitle.lang_hint">(en=English, zh-Hans=简体中文, zh-Hant=繁體中文, ja=日本語, ko=한국어, es=Español, fr=Français, de=Deutsch)</span>
+                            </div>
                             <div id="availableSubtitlesList" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
                         </div>
 
@@ -569,9 +570,9 @@
                 'options.write_auto_subs': '下载自动生成字幕',
                 'options.embed_subs': '嵌入字幕到视频',
                 'subtitle.title': '📝 字幕选项',
-                'subtitle.languages': '字幕语言：',
                 'subtitle.check_available': '🔍 查看可用字幕',
                 'subtitle.available': '可用字幕：',
+                'subtitle.lang_hint': '(en=English, zh-Hans=简体中文, zh-Hant=繁體中文, ja=日本語, ko=한국어, es=Español, fr=Français, de=Deutsch)',
                 'subtitle.manual_subs': '手动字幕',
                 'subtitle.auto_subs': '自动字幕',
                 'subtitle.no_subs_available': '此视频没有可用字幕',
@@ -643,9 +644,9 @@
                 'options.write_auto_subs': 'Download Auto-generated Subtitles',
                 'options.embed_subs': 'Embed Subtitles into Video',
                 'subtitle.title': '📝 Subtitle Options',
-                'subtitle.languages': 'Subtitle Languages:',
                 'subtitle.check_available': '🔍 Check Available Subtitles',
                 'subtitle.available': 'Available Subtitles:',
+                'subtitle.lang_hint': '(en=English, zh-Hans=Simplified Chinese, zh-Hant=Traditional Chinese, ja=Japanese, ko=Korean, es=Spanish, fr=French, de=German)',
                 'subtitle.manual_subs': 'Manual Subtitles',
                 'subtitle.auto_subs': 'Auto Subtitles',
                 'subtitle.no_subs_available': 'No subtitles available for this video',
@@ -717,9 +718,9 @@
                 'options.write_auto_subs': '自動生成字幕をダウンロード',
                 'options.embed_subs': '字幕を動画に埋め込む',
                 'subtitle.title': '📝 字幕オプション',
-                'subtitle.languages': '字幕言語：',
                 'subtitle.check_available': '🔍 利用可能な字幕を確認',
                 'subtitle.available': '利用可能な字幕：',
+                'subtitle.lang_hint': '(en=English, zh-Hans=簡体字中国語, zh-Hant=繁体字中国語, ja=日本語, ko=韓国語, es=スペイン語, fr=フランス語, de=ドイツ語)',
                 'subtitle.manual_subs': '手動字幕',
                 'subtitle.auto_subs': '自動字幕',
                 'subtitle.no_subs_available': 'この動画には字幕がありません',
@@ -877,16 +878,26 @@
 
             let html = '';
 
+            // Filter out invalid subtitle entries
+            const invalidSubtitles = ['Language', 'language', 'live_chat', 'Live chat'];
+
             // Only show manual subtitles with checkboxes
             if (data.has_subtitles && data.subtitles.length > 0) {
-                html = data.subtitles.map(lang => {
-                    return `
-                        <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; padding: 4px 8px; background: #f0f0f0; border-radius: 4px;">
-                            <input type="checkbox" class="available-subtitle-lang" value="${lang}" style="width: 16px; height: 16px;" />
-                            <span>${lang}</span>
-                        </label>
-                    `;
-                }).join('');
+                // Filter out invalid entries
+                const validSubtitles = data.subtitles.filter(lang => !invalidSubtitles.includes(lang));
+
+                if (validSubtitles.length > 0) {
+                    html = validSubtitles.map(lang => {
+                        return `
+                            <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; padding: 4px 8px; background: #f0f0f0; border-radius: 4px;">
+                                <input type="checkbox" class="available-subtitle-lang" value="${lang}" style="width: 16px; height: 16px;" />
+                                <span>${lang}</span>
+                            </label>
+                        `;
+                    }).join('');
+                } else {
+                    html = `<div style="color: #999;">${t('subtitle.no_subs_available')}</div>`;
+                }
             } else {
                 html = `<div style="color: #999;">${t('subtitle.no_subs_available')}</div>`;
             }
