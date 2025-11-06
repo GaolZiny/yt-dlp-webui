@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>yt-dlp Web UI</title>
+    <title>Web Contents Downloader</title>
+
+    <!-- Favicon using emoji -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
+
     <style>
         * {
             margin: 0;
@@ -358,7 +362,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎬 yt-dlp Web UI</h1>
+            <h1 data-i18n="header.title">Web Contents Downloader</h1>
             <p data-i18n="header.subtitle">轻松下载视频和音频</p>
 
             <!-- Language selector -->
@@ -545,6 +549,7 @@
         // Multi-language support
         const translations = {
             zh: {
+                'header.title': 'Web Contents Downloader',
                 'header.subtitle': '轻松下载视频和音频',
                 'download.title': '新建下载',
                 'download.url.label': '视频/音频/播放列表链接 *',
@@ -619,6 +624,7 @@
                 'alert.files_fetch_failed': '获取文件列表失败'
             },
             en: {
+                'header.title': 'Web Contents Downloader',
                 'header.subtitle': 'Download videos and audio easily',
                 'download.title': 'New Download',
                 'download.url.label': 'Video/Audio/Playlist URL *',
@@ -693,6 +699,7 @@
                 'alert.files_fetch_failed': 'Failed to fetch file list'
             },
             ja: {
+                'header.title': 'Web Contents Downloader',
                 'header.subtitle': '動画と音声を簡単にダウンロード',
                 'download.title': '新規ダウンロード',
                 'download.url.label': '動画/音声/プレイリストURL *',
