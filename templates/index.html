@@ -480,11 +480,6 @@
                         </div>
 
                         <div class="checkbox-group">
-                            <input type="checkbox" id="writeAutoSubs" name="write_auto_subs" />
-                            <label for="writeAutoSubs" style="font-size: 14px;" data-i18n="options.write_auto_subs">下载自动生成字幕</label>
-                        </div>
-
-                        <div class="checkbox-group">
                             <input type="checkbox" id="embedSubs" name="embed_subs" />
                             <label for="embedSubs" style="font-size: 14px;" data-i18n="options.embed_subs">嵌入字幕到视频</label>
                         </div>
@@ -498,55 +493,22 @@
                             🔍 查看可用字幕
                         </button>
 
-                        <!-- Available subtitles display -->
-                        <div id="availableSubtitles" class="hidden" style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 6px; border: 1px solid #e0e0e0;">
-                            <div style="font-weight: 600; margin-bottom: 5px;" data-i18n="subtitle.available">可用字幕：</div>
-                            <div id="availableSubtitlesList" style="font-size: 13px; color: #666;"></div>
+                        <!-- Available subtitles display with checkboxes -->
+                        <div id="availableSubtitles" class="hidden" style="margin-bottom: 15px; padding: 10px; background: white; border-radius: 6px; border: 1px solid #e0e0e0;">
+                            <div style="font-weight: 600; margin-bottom: 8px;" data-i18n="subtitle.available">可用字幕：</div>
+                            <div id="availableSubtitlesList" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
                         </div>
 
-                        <!-- Common language selection -->
-                        <div style="margin-bottom: 10px;">
-                            <div style="font-size: 13px; margin-bottom: 6px; color: #666;" data-i18n="subtitle.common_languages">常用语言：</div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
-                                    <input type="checkbox" class="subtitle-lang" value="en" style="width: 16px; height: 16px;" />
-                                    <span data-i18n="subtitle.lang.en">英语 (en)</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
-                                    <input type="checkbox" class="subtitle-lang" value="zh-Hans" style="width: 16px; height: 16px;" />
-                                    <span data-i18n="subtitle.lang.zh-Hans">简体中文 (zh-Hans)</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
-                                    <input type="checkbox" class="subtitle-lang" value="zh-Hant" style="width: 16px; height: 16px;" />
-                                    <span data-i18n="subtitle.lang.zh-Hant">繁体中文 (zh-Hant)</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
-                                    <input type="checkbox" class="subtitle-lang" value="ja" style="width: 16px; height: 16px;" />
-                                    <span data-i18n="subtitle.lang.ja">日语 (ja)</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
-                                    <input type="checkbox" class="subtitle-lang" value="ko" style="width: 16px; height: 16px;" />
-                                    <span data-i18n="subtitle.lang.ko">韩语 (ko)</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
-                                    <input type="checkbox" class="subtitle-lang" value="es" style="width: 16px; height: 16px;" />
-                                    <span data-i18n="subtitle.lang.es">西班牙语 (es)</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
-                                    <input type="checkbox" class="subtitle-lang" value="fr" style="width: 16px; height: 16px;" />
-                                    <span data-i18n="subtitle.lang.fr">法语 (fr)</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
-                                    <input type="checkbox" class="subtitle-lang" value="de" style="width: 16px; height: 16px;" />
-                                    <span data-i18n="subtitle.lang.de">德语 (de)</span>
-                                </label>
+                        <!-- Auto-generated subtitles and custom language input in one line -->
+                        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="writeAutoSubs" name="write_auto_subs" />
+                                <label for="writeAutoSubs" style="font-size: 14px;" data-i18n="options.write_auto_subs">下载自动生成字幕</label>
                             </div>
-                        </div>
 
-                        <!-- Custom language input -->
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label for="customSubLangs" style="font-size: 13px;" data-i18n="subtitle.custom_langs">自定义语言代码（逗号分隔）：</label>
-                            <input type="text" id="customSubLangs" placeholder="例如: en,zh-Hans,ja" style="font-size: 13px; padding: 8px;" data-i18n-placeholder="subtitle.custom_langs_placeholder" />
+                            <div class="form-group" style="flex: 1; margin-bottom: 0; min-width: 250px;">
+                                <input type="text" id="customSubLangs" placeholder="自定义语言代码（逗号分隔），例如: en,zh-Hans,ja" style="font-size: 13px; padding: 8px;" data-i18n-placeholder="subtitle.custom_langs_placeholder" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -615,7 +577,7 @@
                 'subtitle.no_subs_available': '此视频没有可用字幕',
                 'subtitle.common_languages': '常用语言：',
                 'subtitle.custom_langs': '自定义语言代码（逗号分隔）：',
-                'subtitle.custom_langs_placeholder': '例如: en,zh-Hans,ja',
+                'subtitle.custom_langs_placeholder': '自定义语言代码（逗号分隔），例如: en,zh-Hans,ja',
                 'subtitle.lang.en': '英语 (en)',
                 'subtitle.lang.zh-Hans': '简体中文 (zh-Hans)',
                 'subtitle.lang.zh-Hant': '繁体中文 (zh-Hant)',
@@ -689,7 +651,7 @@
                 'subtitle.no_subs_available': 'No subtitles available for this video',
                 'subtitle.common_languages': 'Common Languages:',
                 'subtitle.custom_langs': 'Custom Language Codes (comma-separated):',
-                'subtitle.custom_langs_placeholder': 'e.g.: en,zh-Hans,ja',
+                'subtitle.custom_langs_placeholder': 'Custom language codes (comma-separated), e.g.: en,zh-Hans,ja',
                 'subtitle.lang.en': 'English (en)',
                 'subtitle.lang.zh-Hans': 'Chinese Simplified (zh-Hans)',
                 'subtitle.lang.zh-Hant': 'Chinese Traditional (zh-Hant)',
@@ -763,7 +725,7 @@
                 'subtitle.no_subs_available': 'この動画には字幕がありません',
                 'subtitle.common_languages': 'よく使う言語：',
                 'subtitle.custom_langs': 'カスタム言語コード（カンマ区切り）：',
-                'subtitle.custom_langs_placeholder': '例: en,zh-Hans,ja',
+                'subtitle.custom_langs_placeholder': 'カスタム言語コード（カンマ区切り）、例: en,zh-Hans,ja',
                 'subtitle.lang.en': '英語 (en)',
                 'subtitle.lang.zh-Hans': '簡体字中国語 (zh-Hans)',
                 'subtitle.lang.zh-Hant': '繁体字中国語 (zh-Hant)',
@@ -915,9 +877,16 @@
 
             let html = '';
 
-            // Only show manual subtitles, not auto-generated ones
-            if (data.has_subtitles) {
-                html = `<div>${data.subtitles.join(', ')}</div>`;
+            // Only show manual subtitles with checkboxes
+            if (data.has_subtitles && data.subtitles.length > 0) {
+                html = data.subtitles.map(lang => {
+                    return `
+                        <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; padding: 4px 8px; background: #f0f0f0; border-radius: 4px;">
+                            <input type="checkbox" class="available-subtitle-lang" value="${lang}" style="width: 16px; height: 16px;" />
+                            <span>${lang}</span>
+                        </label>
+                    `;
+                }).join('');
             } else {
                 html = `<div style="color: #999;">${t('subtitle.no_subs_available')}</div>`;
             }
@@ -927,12 +896,12 @@
         }
 
         function getSelectedSubtitleLanguages() {
-            const checkboxes = document.querySelectorAll('.subtitle-lang:checked');
-            const customLangs = document.getElementById('customSubLangs').value.trim();
-
-            let languages = Array.from(checkboxes).map(cb => cb.value);
+            // Get languages from available subtitles checkboxes
+            const availableCheckboxes = document.querySelectorAll('.available-subtitle-lang:checked');
+            let languages = Array.from(availableCheckboxes).map(cb => cb.value);
 
             // Add custom languages
+            const customLangs = document.getElementById('customSubLangs').value.trim();
             if (customLangs) {
                 const customList = customLangs.split(',').map(lang => lang.trim()).filter(lang => lang);
                 languages = languages.concat(customList);
