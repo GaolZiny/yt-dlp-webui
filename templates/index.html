@@ -472,19 +472,22 @@
                 <div style="margin-top: 20px; padding: 15px; background: #f8f9ff; border-radius: 8px;">
                     <h3 style="margin-bottom: 10px; font-size: 16px;" data-i18n="subtitle.title">📝 字幕选项</h3>
 
-                    <div class="checkbox-group" style="margin-bottom: 10px;">
-                        <input type="checkbox" id="writeSubs" name="write_subs" />
-                        <label for="writeSubs" data-i18n="options.write_subs">下载字幕</label>
-                    </div>
+                    <!-- Subtitle checkboxes in one line with smaller font -->
+                    <div style="display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap;">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="writeSubs" name="write_subs" />
+                            <label for="writeSubs" style="font-size: 14px;" data-i18n="options.write_subs">下载字幕</label>
+                        </div>
 
-                    <div class="checkbox-group" style="margin-bottom: 10px;">
-                        <input type="checkbox" id="writeAutoSubs" name="write_auto_subs" />
-                        <label for="writeAutoSubs" data-i18n="options.write_auto_subs">下载自动生成字幕</label>
-                    </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="writeAutoSubs" name="write_auto_subs" />
+                            <label for="writeAutoSubs" style="font-size: 14px;" data-i18n="options.write_auto_subs">下载自动生成字幕</label>
+                        </div>
 
-                    <div class="checkbox-group" style="margin-bottom: 15px;">
-                        <input type="checkbox" id="embedSubs" name="embed_subs" />
-                        <label for="embedSubs" data-i18n="options.embed_subs">嵌入字幕到视频</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="embedSubs" name="embed_subs" />
+                            <label for="embedSubs" style="font-size: 14px;" data-i18n="options.embed_subs">嵌入字幕到视频</label>
+                        </div>
                     </div>
 
                     <!-- Subtitle language selection -->
@@ -912,15 +915,10 @@
 
             let html = '';
 
+            // Only show manual subtitles, not auto-generated ones
             if (data.has_subtitles) {
-                html += `<div style="margin-bottom: 8px;"><strong>${t('subtitle.manual_subs')}:</strong> ${data.subtitles.join(', ')}</div>`;
-            }
-
-            if (data.has_auto_subtitles) {
-                html += `<div><strong>${t('subtitle.auto_subs')}:</strong> ${data.auto_subtitles.join(', ')}</div>`;
-            }
-
-            if (!data.has_subtitles && !data.has_auto_subtitles) {
+                html = `<div>${data.subtitles.join(', ')}</div>`;
+            } else {
                 html = `<div style="color: #999;">${t('subtitle.no_subs_available')}</div>`;
             }
 
