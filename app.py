@@ -78,8 +78,25 @@ def run_ytdlp_download(task_id, url, options):
         # Subtitles
         if options.get('write_subs'):
             cmd.append('--write-subs')
-            cmd.append('--sub-lang')
-            cmd.append(options.get('sub_lang', 'en'))
+
+            # Subtitle languages (support multiple languages)
+            sub_langs = options.get('sub_langs', 'en')
+            if sub_langs:
+                cmd.extend(['--sub-langs', sub_langs])
+
+        # Auto-generated subtitles
+        if options.get('write_auto_subs'):
+            cmd.append('--write-auto-subs')
+
+            # If auto subs but no manual subs, still need to specify languages
+            if not options.get('write_subs'):
+                sub_langs = options.get('sub_langs', 'en')
+                if sub_langs:
+                    cmd.extend(['--sub-langs', sub_langs])
+
+        # Embed subtitles into video
+        if options.get('embed_subs'):
+            cmd.append('--embed-subs')
 
         # Playlist handling
         playlist_items = options.get('playlist_items', None)
@@ -166,6 +183,82 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/api/subtitles', methods=['POST'])
+def get_subtitles():
+    """Get available subtitles for a video"""
+    data = request.get_json()
+    url = data.get('url', '').strip()
+
+    if not url:
+        return jsonify({'error': 'URL is required'}), 400
+
+    try:
+        # Use yt-dlp to get subtitle info
+        cmd = [
+            'yt-dlp',
+            '--list-subs',
+            '--skip-download',
+            url
+        ]
+
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True
+        )
+
+        stdout, stderr = process.communicate(timeout=30)
+
+        if process.returncode != 0:
+            return jsonify({'error': 'Failed to fetch subtitle info', 'details': stderr}), 400
+
+        # Parse the output to extract available subtitle languages
+        subtitles = []
+        auto_subs = []
+
+        lines = stdout.split('\n')
+        in_subs_section = False
+        in_auto_section = False
+
+        for line in lines:
+            line = line.strip()
+
+            # Detect sections
+            if 'Available subtitles' in line:
+                in_subs_section = True
+                in_auto_section = False
+                continue
+            elif 'Available automatic captions' in line:
+                in_auto_section = True
+                in_subs_section = False
+                continue
+            elif line.startswith('[') or not line:
+                continue
+
+            # Parse subtitle language codes
+            if in_subs_section or in_auto_section:
+                parts = line.split()
+                if parts and len(parts[0]) <= 10:  # Language codes are typically short
+                    lang_code = parts[0]
+                    if in_subs_section:
+                        subtitles.append(lang_code)
+                    elif in_auto_section:
+                        auto_subs.append(lang_code)
+
+        return jsonify({
+            'subtitles': subtitles,
+            'auto_subtitles': auto_subs,
+            'has_subtitles': len(subtitles) > 0,
+            'has_auto_subtitles': len(auto_subs) > 0
+        })
+
+    except subprocess.TimeoutExpired:
+        return jsonify({'error': 'Request timeout'}), 408
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/playlist', methods=['POST'])
 def get_playlist_info():
     """Get playlist information"""
@@ -250,7 +343,9 @@ def download():
         'embed_thumbnail': data.get('embed_thumbnail', False),
         'embed_metadata': data.get('embed_metadata', True),
         'write_subs': data.get('write_subs', False),
-        'sub_lang': data.get('sub_lang', 'en'),
+        'write_auto_subs': data.get('write_auto_subs', False),
+        'embed_subs': data.get('embed_subs', False),
+        'sub_langs': data.get('sub_langs', 'en'),  # Can be comma-separated list
         'playlist_items': data.get('playlist_items', None)  # e.g. "1,2,5-8"
     }
 
