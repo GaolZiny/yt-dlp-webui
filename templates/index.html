@@ -466,9 +466,85 @@
                         <input type="checkbox" id="embedMetadata" name="embed_metadata" checked />
                         <label for="embedMetadata" data-i18n="options.embed_metadata">嵌入元数据</label>
                     </div>
-                    <div class="checkbox-group">
+                </div>
+
+                <!-- Subtitle options -->
+                <div style="margin-top: 20px; padding: 15px; background: #f8f9ff; border-radius: 8px;">
+                    <h3 style="margin-bottom: 10px; font-size: 16px;" data-i18n="subtitle.title">📝 字幕选项</h3>
+
+                    <div class="checkbox-group" style="margin-bottom: 10px;">
                         <input type="checkbox" id="writeSubs" name="write_subs" />
                         <label for="writeSubs" data-i18n="options.write_subs">下载字幕</label>
+                    </div>
+
+                    <div class="checkbox-group" style="margin-bottom: 10px;">
+                        <input type="checkbox" id="writeAutoSubs" name="write_auto_subs" />
+                        <label for="writeAutoSubs" data-i18n="options.write_auto_subs">下载自动生成字幕</label>
+                    </div>
+
+                    <div class="checkbox-group" style="margin-bottom: 15px;">
+                        <input type="checkbox" id="embedSubs" name="embed_subs" />
+                        <label for="embedSubs" data-i18n="options.embed_subs">嵌入字幕到视频</label>
+                    </div>
+
+                    <!-- Subtitle language selection -->
+                    <div id="subtitleLanguages" style="margin-top: 10px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;" data-i18n="subtitle.languages">字幕语言：</label>
+
+                        <button type="button" class="btn btn-secondary" onclick="checkSubtitles()" style="margin-bottom: 10px; padding: 8px 15px; font-size: 14px;" data-i18n="subtitle.check_available">
+                            🔍 查看可用字幕
+                        </button>
+
+                        <!-- Available subtitles display -->
+                        <div id="availableSubtitles" class="hidden" style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 6px; border: 1px solid #e0e0e0;">
+                            <div style="font-weight: 600; margin-bottom: 5px;" data-i18n="subtitle.available">可用字幕：</div>
+                            <div id="availableSubtitlesList" style="font-size: 13px; color: #666;"></div>
+                        </div>
+
+                        <!-- Common language selection -->
+                        <div style="margin-bottom: 10px;">
+                            <div style="font-size: 13px; margin-bottom: 6px; color: #666;" data-i18n="subtitle.common_languages">常用语言：</div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
+                                    <input type="checkbox" class="subtitle-lang" value="en" style="width: 16px; height: 16px;" />
+                                    <span data-i18n="subtitle.lang.en">英语 (en)</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
+                                    <input type="checkbox" class="subtitle-lang" value="zh-Hans" style="width: 16px; height: 16px;" />
+                                    <span data-i18n="subtitle.lang.zh-Hans">简体中文 (zh-Hans)</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
+                                    <input type="checkbox" class="subtitle-lang" value="zh-Hant" style="width: 16px; height: 16px;" />
+                                    <span data-i18n="subtitle.lang.zh-Hant">繁体中文 (zh-Hant)</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
+                                    <input type="checkbox" class="subtitle-lang" value="ja" style="width: 16px; height: 16px;" />
+                                    <span data-i18n="subtitle.lang.ja">日语 (ja)</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
+                                    <input type="checkbox" class="subtitle-lang" value="ko" style="width: 16px; height: 16px;" />
+                                    <span data-i18n="subtitle.lang.ko">韩语 (ko)</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
+                                    <input type="checkbox" class="subtitle-lang" value="es" style="width: 16px; height: 16px;" />
+                                    <span data-i18n="subtitle.lang.es">西班牙语 (es)</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
+                                    <input type="checkbox" class="subtitle-lang" value="fr" style="width: 16px; height: 16px;" />
+                                    <span data-i18n="subtitle.lang.fr">法语 (fr)</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer;">
+                                    <input type="checkbox" class="subtitle-lang" value="de" style="width: 16px; height: 16px;" />
+                                    <span data-i18n="subtitle.lang.de">德语 (de)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Custom language input -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="customSubLangs" style="font-size: 13px;" data-i18n="subtitle.custom_langs">自定义语言代码（逗号分隔）：</label>
+                            <input type="text" id="customSubLangs" placeholder="例如: en,zh-Hans,ja" style="font-size: 13px; padding: 8px;" data-i18n-placeholder="subtitle.custom_langs_placeholder" />
+                        </div>
                     </div>
                 </div>
 
@@ -525,6 +601,27 @@
                 'options.embed_thumbnail': '嵌入缩略图',
                 'options.embed_metadata': '嵌入元数据',
                 'options.write_subs': '下载字幕',
+                'options.write_auto_subs': '下载自动生成字幕',
+                'options.embed_subs': '嵌入字幕到视频',
+                'subtitle.title': '📝 字幕选项',
+                'subtitle.languages': '字幕语言：',
+                'subtitle.check_available': '🔍 查看可用字幕',
+                'subtitle.available': '可用字幕：',
+                'subtitle.manual_subs': '手动字幕',
+                'subtitle.auto_subs': '自动字幕',
+                'subtitle.no_subs_available': '此视频没有可用字幕',
+                'subtitle.common_languages': '常用语言：',
+                'subtitle.custom_langs': '自定义语言代码（逗号分隔）：',
+                'subtitle.custom_langs_placeholder': '例如: en,zh-Hans,ja',
+                'subtitle.lang.en': '英语 (en)',
+                'subtitle.lang.zh-Hans': '简体中文 (zh-Hans)',
+                'subtitle.lang.zh-Hant': '繁体中文 (zh-Hant)',
+                'subtitle.lang.ja': '日语 (ja)',
+                'subtitle.lang.ko': '韩语 (ko)',
+                'subtitle.lang.es': '西班牙语 (es)',
+                'subtitle.lang.fr': '法语 (fr)',
+                'subtitle.lang.de': '德语 (de)',
+                'alert.subtitle_fetch_failed': '获取字幕信息失败',
                 'button.download': '⬇️ 开始下载',
                 'button.processing': '⏳ 正在处理...',
                 'progress.title': '下载进度',
@@ -578,6 +675,27 @@
                 'options.embed_thumbnail': 'Embed Thumbnail',
                 'options.embed_metadata': 'Embed Metadata',
                 'options.write_subs': 'Download Subtitles',
+                'options.write_auto_subs': 'Download Auto-generated Subtitles',
+                'options.embed_subs': 'Embed Subtitles into Video',
+                'subtitle.title': '📝 Subtitle Options',
+                'subtitle.languages': 'Subtitle Languages:',
+                'subtitle.check_available': '🔍 Check Available Subtitles',
+                'subtitle.available': 'Available Subtitles:',
+                'subtitle.manual_subs': 'Manual Subtitles',
+                'subtitle.auto_subs': 'Auto Subtitles',
+                'subtitle.no_subs_available': 'No subtitles available for this video',
+                'subtitle.common_languages': 'Common Languages:',
+                'subtitle.custom_langs': 'Custom Language Codes (comma-separated):',
+                'subtitle.custom_langs_placeholder': 'e.g.: en,zh-Hans,ja',
+                'subtitle.lang.en': 'English (en)',
+                'subtitle.lang.zh-Hans': 'Chinese Simplified (zh-Hans)',
+                'subtitle.lang.zh-Hant': 'Chinese Traditional (zh-Hant)',
+                'subtitle.lang.ja': 'Japanese (ja)',
+                'subtitle.lang.ko': 'Korean (ko)',
+                'subtitle.lang.es': 'Spanish (es)',
+                'subtitle.lang.fr': 'French (fr)',
+                'subtitle.lang.de': 'German (de)',
+                'alert.subtitle_fetch_failed': 'Failed to fetch subtitle info',
                 'button.download': '⬇️ Start Download',
                 'button.processing': '⏳ Processing...',
                 'progress.title': 'Download Progress',
@@ -631,6 +749,27 @@
                 'options.embed_thumbnail': 'サムネイル埋め込み',
                 'options.embed_metadata': 'メタデータ埋め込み',
                 'options.write_subs': '字幕ダウンロード',
+                'options.write_auto_subs': '自動生成字幕をダウンロード',
+                'options.embed_subs': '字幕を動画に埋め込む',
+                'subtitle.title': '📝 字幕オプション',
+                'subtitle.languages': '字幕言語：',
+                'subtitle.check_available': '🔍 利用可能な字幕を確認',
+                'subtitle.available': '利用可能な字幕：',
+                'subtitle.manual_subs': '手動字幕',
+                'subtitle.auto_subs': '自動字幕',
+                'subtitle.no_subs_available': 'この動画には字幕がありません',
+                'subtitle.common_languages': 'よく使う言語：',
+                'subtitle.custom_langs': 'カスタム言語コード（カンマ区切り）：',
+                'subtitle.custom_langs_placeholder': '例: en,zh-Hans,ja',
+                'subtitle.lang.en': '英語 (en)',
+                'subtitle.lang.zh-Hans': '簡体字中国語 (zh-Hans)',
+                'subtitle.lang.zh-Hant': '繁体字中国語 (zh-Hant)',
+                'subtitle.lang.ja': '日本語 (ja)',
+                'subtitle.lang.ko': '韓国語 (ko)',
+                'subtitle.lang.es': 'スペイン語 (es)',
+                'subtitle.lang.fr': 'フランス語 (fr)',
+                'subtitle.lang.de': 'ドイツ語 (de)',
+                'alert.subtitle_fetch_failed': '字幕情報の取得に失敗',
                 'button.download': '⬇️ ダウンロード開始',
                 'button.processing': '⏳ 処理中...',
                 'progress.title': 'ダウンロード進捗',
@@ -676,6 +815,15 @@
                     } else {
                         element.textContent = translation;
                     }
+                }
+            });
+
+            // Update placeholder separately for data-i18n-placeholder
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                const translation = translations[currentLanguage][key];
+                if (translation && element.placeholder !== undefined) {
+                    element.placeholder = translation;
                 }
             });
 
@@ -727,6 +875,75 @@
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // Subtitle functionality
+        async function checkSubtitles() {
+            const url = document.getElementById('url').value.trim();
+            if (!url) {
+                showAlert(t('alert.url_required'), 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/subtitles', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    displayAvailableSubtitles(result);
+                } else {
+                    showAlert(result.error || t('alert.subtitle_fetch_failed'), 'error');
+                }
+            } catch (error) {
+                showAlert(t('alert.network_error') + ': ' + error.message, 'error');
+            }
+        }
+
+        function displayAvailableSubtitles(data) {
+            const container = document.getElementById('availableSubtitles');
+            const list = document.getElementById('availableSubtitlesList');
+
+            let html = '';
+
+            if (data.has_subtitles) {
+                html += `<div style="margin-bottom: 8px;"><strong>${t('subtitle.manual_subs')}:</strong> ${data.subtitles.join(', ')}</div>`;
+            }
+
+            if (data.has_auto_subtitles) {
+                html += `<div><strong>${t('subtitle.auto_subs')}:</strong> ${data.auto_subtitles.join(', ')}</div>`;
+            }
+
+            if (!data.has_subtitles && !data.has_auto_subtitles) {
+                html = `<div style="color: #999;">${t('subtitle.no_subs_available')}</div>`;
+            }
+
+            list.innerHTML = html;
+            container.classList.remove('hidden');
+        }
+
+        function getSelectedSubtitleLanguages() {
+            const checkboxes = document.querySelectorAll('.subtitle-lang:checked');
+            const customLangs = document.getElementById('customSubLangs').value.trim();
+
+            let languages = Array.from(checkboxes).map(cb => cb.value);
+
+            // Add custom languages
+            if (customLangs) {
+                const customList = customLangs.split(',').map(lang => lang.trim()).filter(lang => lang);
+                languages = languages.concat(customList);
+            }
+
+            // Remove duplicates
+            languages = [...new Set(languages)];
+
+            return languages.length > 0 ? languages.join(',') : 'en';
         }
 
         // Playlist functionality
@@ -832,6 +1049,9 @@
                 embed_thumbnail: formData.get('embed_thumbnail') === 'on',
                 embed_metadata: formData.get('embed_metadata') === 'on',
                 write_subs: formData.get('write_subs') === 'on',
+                write_auto_subs: formData.get('write_auto_subs') === 'on',
+                embed_subs: formData.get('embed_subs') === 'on',
+                sub_langs: getSelectedSubtitleLanguages(),
                 playlist_items: getSelectedPlaylistItems()  // Add playlist selection
             };
 
