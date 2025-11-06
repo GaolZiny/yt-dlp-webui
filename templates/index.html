@@ -378,26 +378,31 @@
 
             <form id="downloadForm">
                 <div class="form-group">
-                    <label for="url" data-i18n="download.url.label">视频/音频链接 *</label>
-                    <input
-                        type="text"
-                        id="url"
-                        name="url"
-                        data-i18n="download.url.placeholder"
-                        placeholder="粘贴 YouTube、Bilibili 等网站链接..."
-                        required
-                    />
-                    <button type="button" class="btn btn-secondary" onclick="checkPlaylist()" style="margin-top: 10px;" data-i18n="download.check_playlist">
-                        🔍 检查播放列表
-                    </button>
+                    <label for="url" data-i18n="download.url.label">视频/音频/播放列表链接 *</label>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <input
+                            type="text"
+                            id="url"
+                            name="url"
+                            data-i18n="download.url.placeholder"
+                            placeholder="粘贴 YouTube、Bilibili 等网站链接..."
+                            required
+                            style="flex: 1;"
+                        />
+                        <button type="button" class="btn btn-secondary" onclick="checkPlaylist()" style="padding: 10px 15px; font-size: 13px; white-space: nowrap;" data-i18n="download.check_content">
+                            🔍 查看链接内容
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Playlist selection -->
                 <div id="playlistSection" class="hidden" style="margin-bottom: 20px;">
-                    <h3 style="margin-bottom: 15px;"><span data-i18n="playlist.title">📋 播放列表</span>（<span id="playlistCount">0</span> <span data-i18n="playlist.count">个视频</span>）</h3>
-                    <div style="margin-bottom: 10px;">
-                        <button type="button" class="btn btn-secondary" onclick="selectAllVideos()" style="margin-right: 10px;" data-i18n="playlist.select_all">全选</button>
-                        <button type="button" class="btn btn-secondary" onclick="deselectAllVideos()" data-i18n="playlist.deselect_all">全不选</button>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0;"><span data-i18n="playlist.title">📋 页面内容</span>（<span id="playlistCount">0</span> <span data-i18n="playlist.count">个视频</span>）</h3>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" class="btn btn-secondary" onclick="selectAllVideos()" style="padding: 6px 12px; font-size: 13px;" data-i18n="playlist.select_all">全选</button>
+                            <button type="button" class="btn btn-secondary" onclick="deselectAllVideos()" style="padding: 6px 12px; font-size: 13px;" data-i18n="playlist.deselect_all">全不选</button>
+                        </div>
                     </div>
                     <div id="playlistVideos" style="max-height: 400px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px;">
                     </div>
@@ -542,10 +547,10 @@
             zh: {
                 'header.subtitle': '轻松下载视频和音频',
                 'download.title': '新建下载',
-                'download.url.label': '视频/音频链接 *',
+                'download.url.label': '视频/音频/播放列表链接 *',
                 'download.url.placeholder': '粘贴 YouTube、Bilibili 等网站链接...',
-                'download.check_playlist': '🔍 检查播放列表',
-                'playlist.title': '📋 播放列表',
+                'download.check_content': '🔍 查看链接内容',
+                'playlist.title': '📋 页面内容',
                 'playlist.count': '个视频',
                 'playlist.select_all': '全选',
                 'playlist.deselect_all': '全不选',
@@ -600,9 +605,9 @@
                 'files.download': '📥 下载',
                 'files.delete': '🗑️ 删除',
                 'alert.url_required': '请先输入链接',
-                'alert.playlist_found': '发现播放列表，共',
-                'alert.single_video': '这是单个视频，不是播放列表',
-                'alert.playlist_fetch_failed': '获取播放列表失败',
+                'alert.playlist_found': '发现页面内容，共',
+                'alert.single_video': '这是单个视频',
+                'alert.playlist_fetch_failed': '获取页面内容失败',
                 'alert.network_error': '网络错误',
                 'alert.task_created': '下载任务已创建！',
                 'alert.task_failed': '创建下载任务失败',
@@ -616,10 +621,10 @@
             en: {
                 'header.subtitle': 'Download videos and audio easily',
                 'download.title': 'New Download',
-                'download.url.label': 'Video/Audio URL *',
+                'download.url.label': 'Video/Audio/Playlist URL *',
                 'download.url.placeholder': 'Paste YouTube, Bilibili, etc. link...',
-                'download.check_playlist': '🔍 Check Playlist',
-                'playlist.title': '📋 Playlist',
+                'download.check_content': '🔍 View Content',
+                'playlist.title': '📋 Page Content',
                 'playlist.count': 'videos',
                 'playlist.select_all': 'Select All',
                 'playlist.deselect_all': 'Deselect All',
@@ -674,9 +679,9 @@
                 'files.download': '📥 Download',
                 'files.delete': '🗑️ Delete',
                 'alert.url_required': 'Please enter a URL first',
-                'alert.playlist_found': 'Playlist found with',
-                'alert.single_video': 'This is a single video, not a playlist',
-                'alert.playlist_fetch_failed': 'Failed to fetch playlist',
+                'alert.playlist_found': 'Page content found with',
+                'alert.single_video': 'This is a single video',
+                'alert.playlist_fetch_failed': 'Failed to fetch page content',
                 'alert.network_error': 'Network error',
                 'alert.task_created': 'Download task created!',
                 'alert.task_failed': 'Failed to create download task',
@@ -690,10 +695,10 @@
             ja: {
                 'header.subtitle': '動画と音声を簡単にダウンロード',
                 'download.title': '新規ダウンロード',
-                'download.url.label': '動画/音声URL *',
+                'download.url.label': '動画/音声/プレイリストURL *',
                 'download.url.placeholder': 'YouTube、Bilibiliなどのリンクを貼り付け...',
-                'download.check_playlist': '🔍 プレイリストを確認',
-                'playlist.title': '📋 プレイリスト',
+                'download.check_content': '🔍 コンテンツを表示',
+                'playlist.title': '📋 ページ内容',
                 'playlist.count': '本の動画',
                 'playlist.select_all': 'すべて選択',
                 'playlist.deselect_all': 'すべて解除',
@@ -748,9 +753,9 @@
                 'files.download': '📥 ダウンロード',
                 'files.delete': '🗑️ 削除',
                 'alert.url_required': '先にURLを入力してください',
-                'alert.playlist_found': 'プレイリストが見つかりました。合計',
+                'alert.playlist_found': 'ページ内容が見つかりました。合計',
                 'alert.single_video': 'これは単一の動画です',
-                'alert.playlist_fetch_failed': 'プレイリストの取得に失敗',
+                'alert.playlist_fetch_failed': 'ページ内容の取得に失敗',
                 'alert.network_error': 'ネットワークエラー',
                 'alert.task_created': 'ダウンロードタスクを作成しました！',
                 'alert.task_failed': 'ダウンロードタスクの作成に失敗',
