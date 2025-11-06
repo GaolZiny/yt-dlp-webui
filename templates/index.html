@@ -17,7 +17,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -36,19 +36,21 @@
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .header p {
             font-size: 1.1em;
-            opacity: 0.9;
+            opacity: 0.95;
         }
 
         .main-card {
-            background: white;
+            background: #1a1a2e;
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             margin-bottom: 20px;
+            color: #e0e0e0;
         }
 
         .form-group {
@@ -59,7 +61,7 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #333;
+            color: #b0b0b0;
         }
 
         .form-group input[type="text"],
@@ -67,10 +69,12 @@
         .form-group input[type="number"] {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #2d2d44;
             border-radius: 8px;
             font-size: 14px;
             transition: border-color 0.3s;
+            background: #16213e;
+            color: #e0e0e0;
         }
 
         .form-group input[type="text"]:focus,
@@ -78,6 +82,7 @@
         .form-group input[type="number"]:focus {
             outline: none;
             border-color: #4facfe;
+            background: #1a2845;
         }
 
         .mode-selector {
@@ -89,21 +94,24 @@
         .mode-option {
             flex: 1;
             padding: 15px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #2d2d44;
             border-radius: 10px;
             cursor: pointer;
             text-align: center;
             transition: all 0.3s;
+            background: #16213e;
+            color: #b0b0b0;
         }
 
         .mode-option:hover {
             border-color: #4facfe;
-            background: #f0f9ff;
+            background: #1a2845;
+            color: #e0e0e0;
         }
 
         .mode-option.active {
             border-color: #4facfe;
-            background: #4facfe;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
         }
 
@@ -125,7 +133,7 @@
 
         /* Fix jumping issue when switching between audio and video modes */
         #audioOptions, #videoOptions {
-            min-height: 120px;
+            min-height: 75px;
         }
 
         .checkbox-group {
@@ -173,12 +181,14 @@
         }
 
         .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
+            background: #2d2d44;
+            color: #b0b0b0;
+            border: 1px solid #3d3d5c;
         }
 
         .btn-secondary:hover {
-            background: #e0e0e0;
+            background: #3d3d5c;
+            color: #e0e0e0;
         }
 
         .btn-danger {
@@ -211,10 +221,11 @@
         .progress-bar {
             width: 100%;
             height: 30px;
-            background: #f0f0f0;
+            background: #16213e;
             border-radius: 15px;
             overflow: hidden;
             margin: 10px 0;
+            border: 1px solid #2d2d44;
         }
 
         .progress-fill {
@@ -230,11 +241,12 @@
 
         .progress-message {
             padding: 10px;
-            background: #f8f9ff;
+            background: #16213e;
             border-radius: 8px;
             font-size: 14px;
-            color: #333;
+            color: #b0b0b0;
             margin-top: 10px;
+            border: 1px solid #2d2d44;
         }
 
         .files-section {
@@ -250,9 +262,10 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px;
-            background: #f8f9ff;
+            background: #16213e;
             border-radius: 8px;
             margin-bottom: 10px;
+            border: 1px solid #2d2d44;
         }
 
         .file-info {
@@ -261,13 +274,13 @@
 
         .file-name {
             font-weight: 600;
-            color: #333;
+            color: #e0e0e0;
             margin-bottom: 5px;
         }
 
         .file-meta {
             font-size: 12px;
-            color: #666;
+            color: #888;
         }
 
         .file-actions {
@@ -302,13 +315,14 @@
             align-items: center;
             padding: 10px;
             margin-bottom: 8px;
-            background: #f8f9ff;
+            background: #16213e;
             border-radius: 6px;
             transition: background 0.2s;
+            border: 1px solid #2d2d44;
         }
 
         .playlist-video-item:hover {
-            background: #e8e9ff;
+            background: #1a2845;
         }
 
         .playlist-video-item input[type="checkbox"] {
@@ -324,20 +338,20 @@
 
         .playlist-video-title {
             font-weight: 600;
-            color: #333;
+            color: #e0e0e0;
             margin-bottom: 4px;
         }
 
         .playlist-video-duration {
             font-size: 12px;
-            color: #666;
+            color: #888;
         }
 
         h2 {
-            color: #333;
+            color: #e0e0e0;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid #2d2d44;
         }
 
         h3 {
@@ -483,7 +497,7 @@
                 </div>
 
                 <!-- Subtitle options -->
-                <div style="margin-top: 20px; padding: 15px; background: #f8f9ff; border-radius: 8px;">
+                <div style="margin-top: 20px; padding: 15px; background: #16213e; border-radius: 8px; border: 1px solid #2d2d44;">
                     <h3 style="margin-bottom: 10px; font-size: 16px;" data-i18n="subtitle.title">📝 字幕选项</h3>
 
                     <!-- Subtitle checkboxes in one line with smaller font -->
@@ -506,10 +520,10 @@
                         </button>
 
                         <!-- Available subtitles display with checkboxes -->
-                        <div id="availableSubtitles" class="hidden" style="margin-bottom: 15px; padding: 10px; background: white; border-radius: 6px; border: 1px solid #e0e0e0;">
+                        <div id="availableSubtitles" class="hidden" style="margin-bottom: 15px; padding: 10px; background: #1a1a2e; border-radius: 6px; border: 1px solid #2d2d44;">
                             <div style="margin-bottom: 8px;">
-                                <span style="font-weight: 600;" data-i18n="subtitle.available">可用字幕：</span>
-                                <span style="font-size: 11px; color: #666; margin-left: 8px;" data-i18n="subtitle.lang_hint">(en=English, zh-Hans=简体中文, zh-Hant=繁體中文, ja=日本語, ko=한국어, es=Español, fr=Français, de=Deutsch)</span>
+                                <span style="font-weight: 600; color: #e0e0e0;" data-i18n="subtitle.available">可用字幕：</span>
+                                <span style="font-size: 11px; color: #888; margin-left: 8px;" data-i18n="subtitle.lang_hint">(en=English, zh-Hans=简体中文, zh-Hant=繁體中文, ja=日本語, ko=한국어, es=Español, fr=Français, de=Deutsch)</span>
                             </div>
                             <div id="availableSubtitlesList" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
                         </div>
@@ -906,17 +920,17 @@
                 if (validSubtitles.length > 0) {
                     html = validSubtitles.map(lang => {
                         return `
-                            <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; padding: 4px 8px; background: #f0f0f0; border-radius: 4px;">
+                            <label style="display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; padding: 4px 8px; background: #2d2d44; border-radius: 4px; color: #b0b0b0; border: 1px solid #3d3d5c;">
                                 <input type="checkbox" class="available-subtitle-lang" value="${lang}" style="width: 16px; height: 16px;" />
                                 <span>${lang}</span>
                             </label>
                         `;
                     }).join('');
                 } else {
-                    html = `<div style="color: #999;">${t('subtitle.no_subs_available')}</div>`;
+                    html = `<div style="color: #888;">${t('subtitle.no_subs_available')}</div>`;
                 }
             } else {
-                html = `<div style="color: #999;">${t('subtitle.no_subs_available')}</div>`;
+                html = `<div style="color: #888;">${t('subtitle.no_subs_available')}</div>`;
             }
 
             list.innerHTML = html;
