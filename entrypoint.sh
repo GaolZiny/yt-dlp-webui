@@ -21,5 +21,20 @@ echo "=================================================="
 echo "🌐 Starting web server on port 8080..."
 echo "=================================================="
 
-# Execute the main application
-exec python app.py
+# Get port from environment or use default
+PORT=${PORT:-8080}
+
+# Execute the main application with gunicorn
+# - app:app means module 'app' and Flask instance 'app'
+# - --bind 0.0.0.0:$PORT listens on all interfaces
+# - --workers 4 uses 4 worker processes for better performance
+# - --timeout 300 allows long-running downloads (5 minutes)
+# - --graceful-timeout 30 gives workers time to finish on shutdown
+# - --access-logfile - logs requests to stdout
+exec gunicorn app:app \
+    --bind 0.0.0.0:$PORT \
+    --workers 4 \
+    --timeout 300 \
+    --graceful-timeout 30 \
+    --access-logfile - \
+    --error-logfile -
