@@ -51,7 +51,45 @@ docker-compose up -d
 # 打开浏览器访问：http://localhost:8080
 ```
 
-#### 使用 Docker
+#### 使用预构建镜像（推荐 - 适合NAS用户）
+
+直接从 GitHub Container Registry 拉取预构建的镜像，无需自己构建：
+
+```bash
+# 运行容器（使用预构建镜像）
+docker run -d \
+  --name yt-dlp-webui \
+  -p 8080:8080 \
+  -v /your/download/path:/downloads \
+  -e TZ=Asia/Shanghai \
+  --restart unless-stopped \
+  ghcr.io/gaolziny/yt-dlp-webui:latest
+```
+
+**优势：**
+- ✅ 无需构建，立即可用
+- ✅ 自动更新检测 - NAS Docker管理界面会提示新版本
+- ✅ 支持 X86/AMD64 和 ARM64 架构
+- ✅ 每次推送代码后自动构建最新版本
+
+**在 Synology NAS 上使用：**
+
+1. 打开 Container Manager（套件中心安装）
+2. 在"注册表"中搜索：`ghcr.io/gaolziny/yt-dlp-webui`
+3. 下载 `latest` 标签
+4. 创建容器，设置：
+   - 端口映射：`8080:8080`
+   - 卷映射：`/volume1/downloads/yt-dlp:/downloads`
+   - 环境变量：`TZ=Asia/Shanghai`
+5. 启动容器
+
+**更新镜像：**
+
+当有新版本时，Docker管理界面会显示更新提示，点击更新即可。
+
+#### 使用 Docker 自行构建
+
+如果需要自行构建：
 
 ```bash
 # 构建镜像
@@ -245,7 +283,34 @@ docker-compose up -d
 # Open browser: http://localhost:8080
 ```
 
-#### Using Docker
+#### Using Pre-built Image (Recommended for NAS users)
+
+Pull the pre-built image from GitHub Container Registry:
+
+```bash
+# Run container with pre-built image
+docker run -d \
+  --name yt-dlp-webui \
+  -p 8080:8080 \
+  -v /your/download/path:/downloads \
+  -e TZ=Asia/Shanghai \
+  --restart unless-stopped \
+  ghcr.io/gaolziny/yt-dlp-webui:latest
+```
+
+**Advantages:**
+- ✅ No build required, ready to use
+- ✅ Auto-update detection in Docker management UI
+- ✅ Support for X86/AMD64 and ARM64 architectures
+- ✅ Automatically built with each code push
+
+**Update Image:**
+
+When a new version is available, your Docker management interface will show an update notification. Click update to upgrade.
+
+#### Using Docker (Build yourself)
+
+If you want to build the image yourself:
 
 ```bash
 # Build the image
@@ -376,7 +441,34 @@ docker-compose up -d
 # ブラウザで開く：http://localhost:8080
 ```
 
-#### Dockerを使用
+#### ビルド済みイメージを使用（NASユーザー推奨）
+
+GitHub Container Registryからビルド済みイメージを取得：
+
+```bash
+# ビルド済みイメージでコンテナを実行
+docker run -d \
+  --name yt-dlp-webui \
+  -p 8080:8080 \
+  -v /your/download/path:/downloads \
+  -e TZ=Asia/Tokyo \
+  --restart unless-stopped \
+  ghcr.io/gaolziny/yt-dlp-webui:latest
+```
+
+**メリット：**
+- ✅ ビルド不要、すぐに使える
+- ✅ Docker管理UIで自動更新検出
+- ✅ X86/AMD64とARM64アーキテクチャに対応
+- ✅ コードプッシュごとに自動ビルド
+
+**イメージの更新：**
+
+新しいバージョンが利用可能になると、Docker管理インターフェースに更新通知が表示されます。更新をクリックしてアップグレードできます。
+
+#### Dockerを使用（自分でビルド）
+
+自分でイメージをビルドする場合：
 
 ```bash
 # イメージをビルド
