@@ -5,15 +5,15 @@ services:
     build: .
     container_name: yt-dlp-webui
     ports:
-      - "8080:8080"
+      - "9090:8080"
     volumes:
       # 将下载目录映射到宿主机
       # 修改冒号前的路径为你NAS上想要保存文件的路径
       # 例如：/volume1/downloads/yt-dlp:/downloads
-      - ./downloads:/downloads
+      - /vol2/1000/SG500/download/dlp:/downloads
     environment:
       - DOWNLOAD_DIR=/downloads
-      - TZ=Asia/Shanghai  # 设置时区
+      - TZ=Asia/Tokyo  # 设置时区
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
