@@ -76,25 +76,27 @@ def run_ytdlp_download(task_id, url, options):
             cmd.append('--embed-metadata')
 
         # Subtitles
-        if options.get('write_subs'):
-            cmd.append('--write-subs')
+        # If user wants to embed subs, we must download them first
+        write_subs = options.get('write_subs') or options.get('embed_subs')
+        write_auto_subs = options.get('write_auto_subs')
 
-            # Subtitle languages (support multiple languages)
-            sub_langs = options.get('sub_langs', 'en')
+        # Get subtitle languages
+        sub_langs = options.get('sub_langs', 'en')
+
+        # Download manual subtitles
+        if write_subs:
+            cmd.append('--write-subs')
             if sub_langs:
                 cmd.extend(['--sub-langs', sub_langs])
 
         # Auto-generated subtitles
-        if options.get('write_auto_subs'):
+        if write_auto_subs:
             cmd.append('--write-auto-subs')
+            # Only add sub-langs if not already added by write_subs
+            if not write_subs and sub_langs:
+                cmd.extend(['--sub-langs', sub_langs])
 
-            # If auto subs but no manual subs, still need to specify languages
-            if not options.get('write_subs'):
-                sub_langs = options.get('sub_langs', 'en')
-                if sub_langs:
-                    cmd.extend(['--sub-langs', sub_langs])
-
-        # Embed subtitles into video
+        # Embed subtitles into video (only works if subtitles are downloaded)
         if options.get('embed_subs'):
             cmd.append('--embed-subs')
 
