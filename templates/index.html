@@ -431,15 +431,12 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="audioQuality" data-i18n="audio.quality">音频质量 (0=最好, 10=最差)</label>
-                            <input
-                                type="number"
-                                id="audioQuality"
-                                name="audio_quality"
-                                value="5"
-                                min="0"
-                                max="10"
-                            />
+                            <label for="audioQuality" data-i18n="audio.quality">音频质量</label>
+                            <select id="audioQuality" name="audio_quality">
+                                <option value="0" data-i18n="audio.quality.high">高品质</option>
+                                <option value="5" data-i18n="audio.quality.medium">中品质</option>
+                                <option value="9" data-i18n="audio.quality.low">低品质</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -483,9 +480,6 @@
             <!-- Progress section -->
             <div class="progress-section" id="progressSection">
                 <h2 data-i18n="progress.title">下载进度</h2>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressBar">0%</div>
-                </div>
                 <div class="progress-message" id="progressMessage" data-i18n="progress.preparing">准备下载...</div>
             </div>
         </div>
@@ -517,7 +511,10 @@
                 'mode.video': '视频',
                 'mode.audio': '音频',
                 'audio.format': '音频格式',
-                'audio.quality': '音频质量 (0=最好, 10=最差)',
+                'audio.quality': '音频质量',
+                'audio.quality.high': '高品质',
+                'audio.quality.medium': '中品质',
+                'audio.quality.low': '低品质',
                 'video.format': '视频格式',
                 'video.best': '最佳质量',
                 'video.best_merge': '最佳视频+音频',
@@ -567,7 +564,10 @@
                 'mode.video': 'Video',
                 'mode.audio': 'Audio',
                 'audio.format': 'Audio Format',
-                'audio.quality': 'Audio Quality (0=Best, 10=Worst)',
+                'audio.quality': 'Audio Quality',
+                'audio.quality.high': 'High Quality',
+                'audio.quality.medium': 'Medium Quality',
+                'audio.quality.low': 'Low Quality',
                 'video.format': 'Video Format',
                 'video.best': 'Best Quality',
                 'video.best_merge': 'Best Video+Audio',
@@ -617,7 +617,10 @@
                 'mode.video': '動画',
                 'mode.audio': '音声',
                 'audio.format': '音声形式',
-                'audio.quality': '音声品質 (0=最高, 10=最低)',
+                'audio.quality': '音声品質',
+                'audio.quality.high': '高品質',
+                'audio.quality.medium': '中品質',
+                'audio.quality.low': '低品質',
                 'video.format': '動画形式',
                 'video.best': '最高品質',
                 'video.best_merge': '最高動画+音声',
@@ -870,11 +873,7 @@
                     const response = await fetch(`/api/status/${taskId}`);
                     const status = await response.json();
 
-                    const progressBar = document.getElementById('progressBar');
                     const progressMessage = document.getElementById('progressMessage');
-
-                    progressBar.style.width = status.progress + '%';
-                    progressBar.textContent = Math.round(status.progress) + '%';
                     progressMessage.textContent = status.message || '下载中...';
 
                     if (status.status === 'completed') {
@@ -882,12 +881,16 @@
                         showAlert(t('alert.download_complete'), 'success');
                         document.getElementById('downloadBtn').disabled = false;
                         document.getElementById('downloadBtn').querySelector('span').textContent = t('button.download');
+                        // Hide progress section after completion
+                        document.getElementById('progressSection').style.display = 'none';
                         refreshFiles();
                     } else if (status.status === 'failed') {
                         clearInterval(interval);
                         showAlert(t('alert.download_failed') + ': ' + status.message, 'error');
                         document.getElementById('downloadBtn').disabled = false;
                         document.getElementById('downloadBtn').querySelector('span').textContent = t('button.download');
+                        // Hide progress section after failure
+                        document.getElementById('progressSection').style.display = 'none';
                     }
                 } catch (error) {
                     console.error('Error checking status:', error);
