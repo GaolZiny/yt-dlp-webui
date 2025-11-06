@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   yt-dlp-webui:
-    build: .
+    image: ghcr.io/gaolziny/yt-dlp-webui:latest
     container_name: yt-dlp-webui
     ports:
       - "9090:8080"
